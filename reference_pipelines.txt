@@ -1,0 +1,36 @@
+A bam file is a binary blob that stores all of your aligned sequence data.
+You can view what's in the bam file using "samtools view bamfile.bam | less".
+
+Platinum Genomes:
+https://www.illumina.com/platinumgenomes.html
+
+European Bioinformatics Institute
+https://www.ebi.ac.uk/ena/data/view/PRJEB3381
+https://www.ebi.ac.uk/ena/data/view/PRJEB3246
+
+
+
+
+One location for downloading NA12878
+
+ftp://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/NHGRI_Illumina300X_novoalign_bams/
+
+BAM: 
+ftp://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/NHGRI_Illumina300X_novoalign_bams/HG001.GRCh38_full_plus_hs38d1_analysis_set_minus_alts.300x.bam
+
+BAM/BAI:
+ftp://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/NHGRI_Illumina300X_novoalign_bams/HG001.GRCh38_full_plus_hs38d1_analysis_set_minus_alts.300x.bam.bai
+
+
+Another place to get it:
+ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/data/CEU/NA12878/alignment/
+
+parent:
+ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/data/
+
+info:
+
+
+
+Some other random thing:
+ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/data/NA12878/sequence_read/ERR001301.filt.fastq.gz
