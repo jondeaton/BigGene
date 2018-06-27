@@ -3,15 +3,10 @@
 
 set -e # Exit if error occurs
 
-bam="/home/jdeaton/Datasets/1000Genomes/bam/HG00096.mapped.ILLUMINA.bwa.GBR.low_coverage.20120522.bam"
-bam="$HOME/Datasets/1000Genomes/NA12892/NA12892_S1.bam"
+bam="$HOME/Datasets/1000Genomes/bam/HG00096.mapped.ILLUMINA.bwa.GBR.low_coverage.20120522.bam"
 
 # Duplicate Marking
-adam-submit \
-	-- transformAlignments \
-	"$bam" \
-	mkdups.adam \
-	-mark_duplicate_reads
+adam-submit -- transformAlignments "$bam" mkdups.adam -mark_duplicate_reads
 
 # Fragment Duplicate Marking command
 adam-submit \

@@ -1,5 +1,6 @@
-A bam file is a binary blob that stores all of your aligned sequence data.
-You can view what's in the bam file using "samtools view bamfile.bam | less".
+
+This file describes where to find genomic datasets
+
 
 Platinum Genomes:
 https://www.illumina.com/platinumgenomes.html
@@ -34,3 +35,7 @@ info:
 
 Some other random thing:
 ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/data/NA12878/sequence_read/ERR001301.filt.fastq.gz
+
+
+To view BAM files:
+  samtools view bamfile.bam | less
