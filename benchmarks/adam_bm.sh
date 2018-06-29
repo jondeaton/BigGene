@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# call-variants-avocado-freebayes-yarn.sh s3://source sample s3://dest
+# adam_bm.sh s3://source sample s3://dest
 SRC_DIR=$1
 SAMPLE=$2
 DEST_DIR=$3
 HDFS_DIR="/data"
 HDFS_PATH="hdfs://spark-master:8020$HDFS_DIR"
-REFERENCE=
+REFERENCE=""
 
-#
 # EMR cluster with:
 # 1x 16 vCPUs 30G RAM master node (m3.2xlarge)
 # 8x 16 vCPUs 61G RAM worker nodes (r3.2xlarge)
