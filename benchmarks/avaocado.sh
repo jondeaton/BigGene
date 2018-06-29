@@ -41,13 +41,25 @@ echo "Deleting scratch contents: $SCRATCH"
 rm -rf "$SCRATCH"/*
 
 echo "==================== MARKING DUPLICATES, SORTING, TRANSFORMING  ========================="
-adam-submit -- transformAlignments \
+adam-submit \
+	--conf spark.bigstream.xray.overwrite=true \
+	--conf spark.bigstream.xray.filename=transformAlignments_xray_log \
+	--conf spark.bigstream.xray.dir=. \
+	--conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
+	--conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar \
+	-- transformAlignments \
 	"$BAM" "$ALIGNED" \
    -mark_duplicate_reads \
    -sort_reads
     
 echo "==================== BIALLELIC GENOTYPER ========================="
-avocado-submit -- biallelicGenotyper \
+avocado-submit \
+	--conf spark.bigstream.xray.overwrite=true \
+	--conf spark.bigstream.xray.filename=biallelicGenotyper_xray_log \
+	--conf spark.bigstream.xray.dir=. \
+	--conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
+	--conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar \
+	-- biallelicGenotyper \
 	"$ALIGNED" "$GENOTYPED" \
 	-no_chr_prefixes
 
