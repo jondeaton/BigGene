@@ -9,14 +9,13 @@ theme:
 - Copenhagen
 ---
 
-[//]: <> (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3198575/pdf/btr509.pdf)
+[//]: # (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3198575/pdf/btr509.pdf)
 
-[//]: <> (pandoc presentation.md -t beamer -o final.pdf)
+[//]: # (pandoc presentation.md -t beamer -o final.pdf)
 
 # Topics
 
-+ ADAM/Avocado Schemas
-+ ADAM/Avocado Class heigherarchy
++ ADAM/Avocado Schemas & Class heigherarchy
 + Biallectic Genotyper Execution (variant calling)
   - Cannonical SNP caller algorithm
 + Read Alignment Execution (read mapping)
@@ -115,12 +114,43 @@ Example usage:
 2. `Prefilter Reads`
 	- Autosome (non-sex), sex chromosome, mitochondrial (by name)
 	- Mapped reads, high enough quality reads, mapped duiplicates
-3. `DiscoverVariants`
-4. `CallVariants`
+3. `DiscoverVariants` ($\sim 8$ seconds)
+4. `CallVariants`  ($\sim 15$ seconds)
+
 
 # `DiscoverVariants`
 
+Discover all of the variants that exist in an RDD of reads, i.e. `RDD[AlignmentRecord]`
 
+1.  Map `variantsInRead` over the `RDD[AlignmentRecord]`
+	- `variantRdd = rdd.flatMap(variantsInRead)`
+	- `variantsInRead` loops over CIGAR `string` in each `AlignmentRecord`
+		+ CIGAR `string` was created during alignment
+		+ `"42M5D56M"` = "$42$ matchnig, $5$ deleted bases,$56$ matchnig"
+		+ Emits a stream of variants for each CIGAR `string`
+2. Convert `variantsInRead` (RDD) to Data
+
+# `DiscoverVariants` continued...
+
+3. Find unique variants (Dataframe SQL operation)
+
+		val uniqueVariants = optMinObservations.fold({
+			variantDs.distinct
+		})(mo => {
+			variantDs.groupBy(variantDs("contigName"),
+			variantDs("start"),
+			variantDs("referenceAllele"),
+			variantDs("alternateAllele"))
+			.count()
+			.where($"count" > mo)
+			.drop("count")
+		})
+
+4. Convert Dataframe back to RDD
+	
+		uniqueVariants.as[DiscoveredVariant]
+			.rdd.map(_.toVariant)
+	
 # `CallVariants`: join reads against variants
 
 	val joinedRdd = TreeRegionJoin.joinAndGroupByRight(
@@ -130,12 +160,12 @@ Example usage:
 	})).map(_.swap)
 
 
-# `CallVariants`: score variants and get observations
+# `CallVariants`: score variants and get observations (`readsToObservations`)
 
-1. convert to dataframe
-    val observationsDf = sqlContext.createDataFrame(observations)
+1. convert to Dataframe
+    `val observationsDf = sqlContext.createDataFrame(observations)`
 
-2. flatten schema
-	val flatObservationsDf = observationsDf.select(flatFields: _*)
+2. flatten schema + join with 
+	`val flatObservationsDf = observationsDf.select(flatFields: _*)`
 
-
+3. 
