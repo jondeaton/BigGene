@@ -9,6 +9,8 @@ theme:
 - Copenhagen
 ---
 
+[//]: <>j (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3198575/pdf/btr509.pdf)
+
 # Topics
 
 + ADAM/Avocado Schemas
