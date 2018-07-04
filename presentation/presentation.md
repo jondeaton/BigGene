@@ -166,11 +166,10 @@ $$G = \text{argmax}_g \mathcal{L}(g) $$
 
 and the conficence be difference between the two likeliest genotypes.
 
-# `CallVariants`: join reads against variants
+# `CallVariants`: Overview
 
 1. Join reads RDD with `DiscoveredVariants` ($\sim 1$ second)
 2. Score putative variants & converts to `Observation`s
-  - Compute log-likelihoods for each genoty
 3. Map `Observation`s to `Genotype`s
 4. Dump data into `GenotypeRDD`
 
@@ -201,6 +200,25 @@ This operation (`readsToObservations`) involves the bluk of the computation
 3. Join variant and scoring tables(just calculated)
 4. Convert back to Dataset, then to RDD
 
+# `CallVariants`: Step 2: score `Variants` $\rightarrow$ `Observation`
+
+Example conversion from RDD to Dataframe
+
+    def readsToObservations(rdd: RDD[(AlignmentRecord,
+                                      Iterable[Variant])], ...) {
+
+      val observations = rdd.flatMap(r => {
+         readToObservations(r, copyNumber, scoreAllSites)
+      })
+      val sqlContext = SQLContext.getOrCreate(rdd.context)
+      val observationsDf = sqlContext.createDataFrame(observations)
+      // define observationsDf
+      
+      val scoredDf = broadcast(ScoredObservation.createFlattenedScores(...))
+
+      scoreDf.join(observationsDF, Seq(...))
+    }
+
 # `CallVariants`: Step 3: obervations to genotypes
     
 Given the log-likelihoods of each genotype, find the most likely genotype
@@ -214,11 +232,25 @@ Also compute a bunch of other meta-data about the genotype calls
 
 Step 4: Simply dump `GenotypesRDD`
 
-
 # `HardFilterGenotypes`
 
-Given `GenotypeRDD`
+Given `GenotypeRDD` apply the following transformations:
+
+    val filteredGenotypes = HardFilterGenotypes(RewriteHets(genotypes, args))
+
+1. Convert genotypes with a high-allelic heterozygous fraction to homozygous variant calls
+2. `HardFilterGenotypes`:
+  - Call quality
+  - Depth of coverage
+  - Strand bias
 
 
+# `saveAsParquet`
+
+    filteredGenotypes.saveAsParquet(args)
+
+- Final call that executes the transformations
+- Saves this RDD to disk as a Parquet + Avro file.
+- At this point `filteredGenotypes` is RDD
 
 
