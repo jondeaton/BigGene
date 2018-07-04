@@ -59,6 +59,18 @@ ADAM provides several schemas convenient for representing genomic data
 	  ...
 	}
 
+# Avocado SNP Algorithm
+
+- *Biallelic Variant Calling*
+	+ **biallelic** genomic locus - site where only two alleles are observed
+	+ **multiallelic** genomic locus - site where many alleles are observed
+
+- The statistical algorithm used to "call variants" in Avocado (i.e. the business-end of Avocado)
+
++ Originally implemented and used in GATK and SAMtools
++ First presented in:"A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter
+estimation from sequencing data" Heng Li, Bioinformatics 2011 Nov 1;27(21):2987-93. doi: 10.1093/bioinformatics/btr509.
++ Deals with calling variants under sequencing error rates
 
 # Avocado Biallelic Genotyper Call Graph
 
@@ -72,7 +84,8 @@ Example usage:
 	- Mapped reads, high enough quality reads, mapped duiplicates
 3. `DiscoverVariants` ($\sim 8$ seconds)
 4. `CallVariants`  ($\sim 15$ seconds)
-
+5. `HardFilterGenotypes`
+6. `saveAsParquet`
 
 # `DiscoverVariants`
 
@@ -107,18 +120,21 @@ Discover all of the variants that exist in an RDD of reads, i.e. `RDD[AlignmentR
 		uniqueVariants.as[DiscoveredVariant]
 			.rdd.map(_.toVariant)
 
-# Avocado SNP Algorithm
 
-- *Biallelic Variant Calling*
-	+ **biallelic** genomic locus - site where only two alleles are observed
-	+ **multiallelic** genomic locus - site where many alleles are observed
+# Avocado Biallelic Genotyper Call Graph
 
-- The statistical algorithm used to "call variants" in Avocado (i.e. the business-end of Avocado)
+Example usage:
+		avocado-submit -- biallelicGenotyper in.bam out.adam
 
-+ Originally implemented and used in GATK and SAMtools
-+ First presented in:"A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter
-estimation from sequencing data" Heng Li, Bioinformatics 2011 Nov 1;27(21):2987-93. doi: 10.1093/bioinformatics/btr509.
-+ Deals with calling variants under sequencing error rates
+1. `loadAlignments`
+	- From BAM/FASTQ/ADAM/Parquet file format
+2. `Prefilter Reads`
+	- Autosome (non-sex), sex chromosome, mitochondrial (by name)
+	- Mapped reads, high enough quality reads, mapped duiplicates
+3. `DiscoverVariants` ($\sim 8$ seconds)
+4. **`CallVariants`  ($\sim 15$ seconds)**
+5. `HardFilterGenotypes`
+6. `saveAsParquet`
 
 # Variant calling theoretical foundations
 
@@ -150,16 +166,17 @@ $$G = \text{argmax}_g \mathcal{L}(g) $$
 
 and the conficence be difference between the two likeliest genotypes.
 
-
 # `CallVariants`: join reads against variants
 
-1. Join reads against `DiscoveredVariants` ($\sim 1$ second)
-2. Score putative variants, converts to `Observation`
-3. 
+1. Join reads RDD with `DiscoveredVariants` ($\sim 1$ second)
+2. Score putative variants & converts to `Observation`s
+  - Compute log-likelihoods for each genoty
+3. Map `Observation`s to `Genotype`s
+4. Dump data into `GenotypeRDD`
 
-# `CallVariants`: join reads against variants
+# `CallVariants`: Step 1: join reads with variants
 
-Step 1: Join two RDDs
+Create single RDD with reads and variants
 
 	val joinedRdd = TreeRegionJoin.joinAndGroupByRight(
 		variants.rdd.keyBy(v => ReferenceRegion(v)),
@@ -167,16 +184,41 @@ Step 1: Join two RDDs
 	    ReferenceRegion.opt(r).map(rr => (rr, r))
 	})).map(_.swap)
 
+This operation shows up in x-ray but takes very short period of time
 
-# `CallVariants`: score variants and get observations (`readsToObservations`)
+# `CallVariants`: Step 2: score `Variants` $\rightarrow$ `Observation`
+
+`Observation` is a structure that contains all log-likelihoods
+This operation (`readsToObservations`) involves the bluk of the computation
 
 1. Convert to `Observation` via `flatMap` and convert to Dataframe
 2. Generate Dataframe of `ScoredObservations` calculating log-likelihood of genotypes
 
-	$$\text{max}_g \ \text{log} \ \mathcal{L}(g) $$
+	$$\forall g \in \ \{1..n\} \text{log} \ \mathcal{L}(g) $$
 
-3. Join variant and scoring tables, aggregating
-	
+`Observation` class stores log-likelihoods of each genotype
+
+3. Join variant and scoring tables(just calculated)
 4. Convert back to Dataset, then to RDD
-5. Filter variants
+
+# `CallVariants`: Step 3: obervations to genotypes
+    
+Given the log-likelihoods of each genotype, find the most likely genotype
+
+    observations.map(observationToGenotyps)
+
+  $$G = \text{argmax}_g \text{log} \mathcal{L}(g) $$
+
+Also compute a bunch of other meta-data about the genotype calls
+(e.g. quality, location, other log-likelihoods)
+
+Step 4: Simply dump `GenotypesRDD`
+
+
+# `HardFilterGenotypes`
+
+Given `GenotypeRDD`
+
+
+
 
