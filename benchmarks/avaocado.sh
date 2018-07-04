@@ -64,7 +64,7 @@ adam-submit \
     --conf spark.bigstream.xray.filename="bsqr-xray-log" \
     --conf spark.bigstream.xray.dir="xray" \
     --conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
-    --conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar \
+    --conf spark.driver.extraClassPath=spark-bigstream-xray-2.0.3-BIGSTREAM.jar \
     -- transformAlignments \
     "$MKDUPS" "$BSQR" \
     -recalibrate_base_qualities

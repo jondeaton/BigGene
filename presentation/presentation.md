@@ -20,6 +20,15 @@ theme:
   - Cannonical SNP caller algorithm
 + Read Alignment Execution (read mapping)
 
+# ADAM Schemas Heigherarchy
+
+![Genomic RDD class Heigherarchy](GenomicRDD.png){ width=100% }
+
+- GenomicRDD = abstract wrapper for genomic datasets.
+- GenomicRDD wraps Spark RDD *and* **Spark SQL DataFrame**
+    + Single class provides abstraction of both representations
+- ADAMContext loads GenomicsRDDs to manipulate
+
 # bdg-formats schemas
 
 ADAM provides several schemas convenient for representing genomic data
@@ -31,19 +40,10 @@ ADAM provides several schemas convenient for representing genomic data
 - *NucleotideContigFragment schema* represents a section of a contig’s sequence.
 - *Variant schema* - represents a sequence variant & statistics across samples (indivisuals) and annoration on effect.
 
-
-# ADAM Schemas Heigherarchy
-
-![Genomic RDD class Heigherarchy](GenomicRDD.png){ width=100% }
-
-- GenomicRDD = abstract wrapper for genomic datasets.
-- GenomicRDD wraps Spark RDD *and* **Spark SQL DataFrame**
-    + Single class provides abstraction of both representations
-- ADAMContext loads GenomicsRDDs to manipulate
-
 # GenomicRDD
 
-	trait GenomicDataset[T, U <: Product, V <: GenomicDataset[T, U, V]] {
+	trait GenomicDataset[T, U <: Product,
+	 V <: GenomicDataset[T, U, V]] {
 
 	  // These data as a Spark SQL Dataset.
 	  val dataset: Dataset[U]
@@ -59,6 +59,53 @@ ADAM provides several schemas convenient for representing genomic data
 	  ...
 	}
 
+
+# Avocado Biallelic Genotyper Call Graph
+
+Example usage:
+		avocado-submit -- biallelicGenotyper in.bam out.adam
+
+1. `loadAlignments`
+	- From BAM/FASTQ/ADAM/Parquet file format
+2. `Prefilter Reads`
+	- Autosome (non-sex), sex chromosome, mitochondrial (by name)
+	- Mapped reads, high enough quality reads, mapped duiplicates
+3. `DiscoverVariants` ($\sim 8$ seconds)
+4. `CallVariants`  ($\sim 15$ seconds)
+
+
+# `DiscoverVariants`
+
+Discover all of the variants that exist in an RDD of reads, i.e. `RDD[AlignmentRecord]`
+
+1.  Map `variantsInRead` over the `RDD[AlignmentRecord]`
+	- `variantRdd = rdd.flatMap(variantsInRead)`
+	- `variantsInRead` loops over CIGAR `string` in each `AlignmentRecord`
+		+ CIGAR `string` was created during alignment
+		+ `"42M5D56M"` = "$42$ matchnig, $5$ deleted bases,$56$ matchnig"
+		+ Emits a stream of variants for each CIGAR `string`
+2. Convert `variantsInRead` (RDD) to Dataframe
+
+# `DiscoverVariants` continued...
+
+3. Find unique variants (Dataframe SQL operation)
+
+		val uniqueVariants = optMinObservations.fold({
+			variantDs.distinct
+		})(mo => {
+			variantDs.groupBy(variantDs("contigName"),
+			variantDs("start"),
+			variantDs("referenceAllele"),
+			variantDs("alternateAllele"))
+			.count()
+			.where($"count" > mo)
+			.drop("count")
+		})
+
+4. Convert Dataframe back to RDD
+	
+		uniqueVariants.as[DiscoveredVariant]
+			.rdd.map(_.toVariant)
 
 # Avocado SNP Algorithm
 
@@ -104,54 +151,15 @@ $$G = \text{argmax}_g \mathcal{L}(g) $$
 and the conficence be difference between the two likeliest genotypes.
 
 
-# Avocado Biallelic Genotyper Call Graph
-
-Example usage:
-	avocado-submit -- biallelicGenotyper in.bam out.adam
-
-1. `loadAlignments`
-	- From BAM/FASTQ/ADAM/Parquet file format
-2. `Prefilter Reads`
-	- Autosome (non-sex), sex chromosome, mitochondrial (by name)
-	- Mapped reads, high enough quality reads, mapped duiplicates
-3. `DiscoverVariants` ($\sim 8$ seconds)
-4. `CallVariants`  ($\sim 15$ seconds)
-
-
-# `DiscoverVariants`
-
-Discover all of the variants that exist in an RDD of reads, i.e. `RDD[AlignmentRecord]`
-
-1.  Map `variantsInRead` over the `RDD[AlignmentRecord]`
-	- `variantRdd = rdd.flatMap(variantsInRead)`
-	- `variantsInRead` loops over CIGAR `string` in each `AlignmentRecord`
-		+ CIGAR `string` was created during alignment
-		+ `"42M5D56M"` = "$42$ matchnig, $5$ deleted bases,$56$ matchnig"
-		+ Emits a stream of variants for each CIGAR `string`
-2. Convert `variantsInRead` (RDD) to Data
-
-# `DiscoverVariants` continued...
-
-3. Find unique variants (Dataframe SQL operation)
-
-		val uniqueVariants = optMinObservations.fold({
-			variantDs.distinct
-		})(mo => {
-			variantDs.groupBy(variantDs("contigName"),
-			variantDs("start"),
-			variantDs("referenceAllele"),
-			variantDs("alternateAllele"))
-			.count()
-			.where($"count" > mo)
-			.drop("count")
-		})
-
-4. Convert Dataframe back to RDD
-	
-		uniqueVariants.as[DiscoveredVariant]
-			.rdd.map(_.toVariant)
-	
 # `CallVariants`: join reads against variants
+
+1. Join reads against `DiscoveredVariants` ($\sim 1$ second)
+2. Score putative variants, converts to `Observation`
+3. 
+
+# `CallVariants`: join reads against variants
+
+Step 1: Join two RDDs
 
 	val joinedRdd = TreeRegionJoin.joinAndGroupByRight(
 		variants.rdd.keyBy(v => ReferenceRegion(v)),
@@ -162,10 +170,13 @@ Discover all of the variants that exist in an RDD of reads, i.e. `RDD[AlignmentR
 
 # `CallVariants`: score variants and get observations (`readsToObservations`)
 
-1. convert to Dataframe
-    `val observationsDf = sqlContext.createDataFrame(observations)`
+1. Convert to `Observation` via `flatMap` and convert to Dataframe
+2. Generate Dataframe of `ScoredObservations` calculating log-likelihood of genotypes
 
-2. flatten schema + join with 
-	`val flatObservationsDf = observationsDf.select(flatFields: _*)`
+	$$\text{max}_g \ \text{log} \ \mathcal{L}(g) $$
 
-3. 
+3. Join variant and scoring tables, aggregating
+	
+4. Convert back to Dataset, then to RDD
+5. Filter variants
+
