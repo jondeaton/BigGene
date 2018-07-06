@@ -64,7 +64,6 @@ Recall genomic tertiary analysis pipeline
 
 ![ADAM/Avocado tertiary pipeline](ADAM_pipeline.png)
 
-
 # Avocado SNP Algorithm
 
 - *Biallelic Variant Calling*
@@ -92,10 +91,31 @@ Example usage:
 3. `DiscoverVariants` ($\sim 8$ seconds)
 4. `CallVariants`  ($\sim 15$ seconds)
 5. `HardFilterGenotypes`
-6. `saveAsParquet` ($\sim 30$ seconds)
-
+6. `saveAsParquet` ($\sim 25$ seconds)
 
 # Avocado Biallelic Genotyper RDD Lineage
+
+RDD Lineage 1: variant discovering
+
+	(200) ShuffledRDD[17] at sortByKey at TreeRegionJoin.scala:45 []
+	  +-(200) MapPartitionsRDD[13] at keyBy at BiallelicGenotyper.scala:110 []
+	      |   MapPartitionsRDD[12] at map at DiscoverVariants.scala:101 []
+	      |   MapPartitionsRDD[11] at rdd at DiscoverVariants.scala:100 []
+	      |   MapPartitionsRDD[10] at rdd at DiscoverVariants.scala:100 []
+	      |   MapPartitionsRDD[9] at rdd at DiscoverVariants.scala:100 []
+	      |   ShuffledRowRDD[8] at rdd at DiscoverVariants.scala:100 []
+	      +-(3) MapPartitionsRDD[7] at rdd at DiscoverVariants.scala:100 []
+	         |  MapPartitionsRDD[6] at rdd at DiscoverVariants.scala:100 []
+	         |  MapPartitionsRDD[5] at rdd at DiscoverVariants.scala:100 []
+	         |  MapPartitionsRDD[4] at flatMap at DiscoverVariants.scala:79 []
+	         |  MapPartitionsRDD[3] at map at PrefilterReads.scala:82 []
+	         |  MapPartitionsRDD[2] at filter at PrefilterReads.scala:81 []
+	         |  MapPartitionsRDD[1] at map at ADAMContext.scala:1327 []
+	         |  /home/jdeaton/Datasets/1000Genomes/NA12878/scratch/NA12878.algn.adam NewHadoopRDD[0] at newAPIHadoopFile at ADAMContext.scala:1318 []
+
+# Avocado Biallelic Genotyper RDD Lineage
+
+RDD Lineage 2: variant calling
 
 	(200) MapPartitionsRDD[36] at map at GenomicRDD.scala:3755 []
 	  |   MapPartitionsRDD[35] at flatMap at HardFilterGenotypes.scala:246 []
@@ -119,30 +139,13 @@ Example usage:
 	     |  /home/jdeaton/Datasets/1000Genomes/NA12878/scratch/NA12878.algn.adam NewHadoopRDD[0] at newAPIHadoopFile at ADAMContext.scala:1318 []
 
 
-# Avocado Biallelic Genotyper RDD Lineage
-
-	(200) ShuffledRDD[17] at sortByKey at TreeRegionJoin.scala:45 []
-	  +-(200) MapPartitionsRDD[13] at keyBy at BiallelicGenotyper.scala:110 []
-	      |   MapPartitionsRDD[12] at map at DiscoverVariants.scala:101 []
-	      |   MapPartitionsRDD[11] at rdd at DiscoverVariants.scala:100 []
-	      |   MapPartitionsRDD[10] at rdd at DiscoverVariants.scala:100 []
-	      |   MapPartitionsRDD[9] at rdd at DiscoverVariants.scala:100 []
-	      |   ShuffledRowRDD[8] at rdd at DiscoverVariants.scala:100 []
-	      +-(3) MapPartitionsRDD[7] at rdd at DiscoverVariants.scala:100 []
-	         |  MapPartitionsRDD[6] at rdd at DiscoverVariants.scala:100 []
-	         |  MapPartitionsRDD[5] at rdd at DiscoverVariants.scala:100 []
-	         |  MapPartitionsRDD[4] at flatMap at DiscoverVariants.scala:79 []
-	         |  MapPartitionsRDD[3] at map at PrefilterReads.scala:82 []
-	         |  MapPartitionsRDD[2] at filter at PrefilterReads.scala:81 []
-	         |  MapPartitionsRDD[1] at map at ADAMContext.scala:1327 []
-	         |  /home/jdeaton/Datasets/1000Genomes/NA12878/scratch/NA12878.algn.adam NewHadoopRDD[0] at newAPIHadoopFile at ADAMContext.scala:1318 []
-
-
-
 # `DiscoverVariants`
 
-Discover all of the variants that exist in an RDD of reads, i.e. `RDD[AlignmentRecord]`
+Goal: using reference alignment data, discover all of the places where this new genome exists.
 
+- Input: RDD of reads i.e. `RDD[AlignmentRecord]`
+
+First two steps:
 1.  Map `variantsInRead` over the `RDD[AlignmentRecord]`
 	- `variantRdd = rdd.flatMap(variantsInRead)`
 	- `variantsInRead` loops over CIGAR `string` in each `AlignmentRecord`
@@ -190,31 +193,55 @@ Example usage:
 
 # Variant calling theoretical foundations
 
+![Variant calling visualization](variants.jpg)
+
+
+# Variant calling theoretical foundations
+
+- $m$: "ploidy of the sample", i.e. the number of alleles of that locus in the individual
+- $g$: the "genotype", i.e. the number of those alleles which are of the reference
+- $k$: number of reads of that locus
+
+Without sequencing error, the probability of observing the reference base, $r$ in read $j$ ($R_j$) is 
+
+$$P(R_j = r \ | \ g) = \frac{g}{m}$$
+
+with sequencing error probability $\epsilon_j$ at position $j$ in read $R$, the probability is 
+
+$$P(R_j = r \ | \ g) = \frac{g (1 - \epsilon_j) + (m - g) \epsilon_j}{m}$$
+
+- Note: Each sequenced base pair has "quality score": $Q=-10\text{log} p$
+- Typically discard all base-calls below Q30 (>0.001 probability being wrong)
+
+# Variant calling theoretical foundations
+
 + *Site independency*: Data at different sites in the genome are independent. 
 + *Error independency and sample independency*: For a given genomic site, sequencing and mapping errors from different reads are independent.
 
-$$ \mathcal{L}(\theta) = \prod_{i=1}^n \mathcal{L}_i (\theta) $$
+Probability of genotype given reads $R_1, R_2, ..., R_k$
 
-+ $\mathcal{L}(\theta) =$ likelihood of all $n$ individuals/samples
-+ $\mathcal{L}_i(\theta) =$ likelihood of the $i$'th sample 
-
+$$ P(R_1, R_2, ..., R_k \ | \ g) = \prod_{j=1}^k P(R_j \ | \ g)$$
 
 # Computing genotype likelihoods
+Without loss of generality, assume $R_1, ... R_l$ match reference, and $R_{l+1}, ... R_k$ are variant. The probability of genotype $R$, $P(R_1, R_2, ..., R_k \ | \ g)=$
 
-The likelihood that an individual has genotype $g$ is given by
+$$ P(R \ | \ g) = \frac{1}{m^k} \prod_{j=1}^l \bigg[ (m-g) \epsilon_j + g(1 - \epsilon_j) \bigg]\prod_{j=l+1}^k \bigg[ (m-g) (1- \epsilon_j) + g\epsilon_j \bigg] $$
 
-$$ \mathcal{L}(g) = \frac{1}{m^k} \prod_{j=1}^l \bigg[ (m-g) \epsilon_j + g(1 - \epsilon_j) \bigg]\prod_{j=l+1}^k \bigg[ (m-g) (1- \epsilon_j) + g\epsilon_j \bigg] $$
-
-- $m$ "ploidy of the sample", i.e. the number of alleles of that locus in the individual
-- $g=$ the "genotype", i.e. the number of those alleles which are of the reference
-- $\epsilon_j=$ sequencing error for base pair at position $j$
-- $k=$ number of reads of that locus
+- $m$: "ploidy of the sample", i.e. the number of alleles of that locus in the individual
+- $g$: the "genotype", i.e. the number of those alleles which are of the reference
+- $\epsilon_j$: sequencing error for base pair at position $j$
+- $k$: number of reads of that locus
+- $l$: number of reads with reference base-call
 
 # SNP Calling
 
-With the probability of each genotype, $\mathcal{L}(g)$, in hand we let our genotype call $G$ as
+With the probability of our read data given each possible genotype, calculate the probability of each genotype usign Baye's rule
 
-$$G = \text{argmax}_g \mathcal{L}(g) $$
+$$ P(g \ | \ R) = \frac{P(R \ | \ g) \ P(g)}{P(R)} $$
+
+since $P(R \ | \ g)$ is known. However, $P(g)$, derrived from *site allele-frequency*, is hard to calculate so we just call genotype $G$ using maximum likelihood estimation:
+
+$$G = \text{argmax}_g \ \mathcal{L}(g) = \text{argmax}_g \ P(R \ | \ g) $$
 
 and the conficence be difference between the two likeliest genotypes.
 
