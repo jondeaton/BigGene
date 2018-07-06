@@ -18,7 +18,6 @@ theme:
 + ADAM/Avocado Schemas & Class heigherarchy
 + Biallectic Genotyper Execution (variant calling)
   - Cannonical SNP caller algorithm
-+ Read Alignment Execution (read mapping)
 
 # ADAM Schemas Heigherarchy
 
@@ -306,4 +305,21 @@ Given `GenotypeRDD` apply the following transformations:
 - Saves this RDD to disk as a Parquet + Avro file.
 - At this point `filteredGenotypes` is RDD
 
+
+
+# Overall Pipeline
+
+--------------------------------
+      &nbsp;                time
+--------------------------- -----
+   **Duplicate marking**     93.8s 
+
+  **BSQR**                   97.6s 
+
+ **Realignment**             96.5s
+
+  **Genotyping**             42.9s
+
+  **Jointer**                 5s
+---------------------------------
 
