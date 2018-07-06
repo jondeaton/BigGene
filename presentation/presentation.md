@@ -61,6 +61,13 @@ ADAM provides several schemas convenient for representing genomic data
 
 # Avocado SNP Algorithm
 
+Recall genomic tertiary analysis pipeline
+
+![ADAM/Avocado tertiary pipeline](ADAM_pipeline.png)
+
+
+# Avocado SNP Algorithm
+
 - *Biallelic Variant Calling*
 	+ **biallelic** genomic locus - site where only two alleles are observed
 	+ **multiallelic** genomic locus - site where many alleles are observed
@@ -75,7 +82,8 @@ estimation from sequencing data" Heng Li, Bioinformatics 2011 Nov 1;27(21):2987-
 # Avocado Biallelic Genotyper Call Graph
 
 Example usage:
-		avocado-submit -- biallelicGenotyper in.bam out.adam
+		
+      avocado-submit -- biallelicGenotyper align-in.bam variants-out.adam
 
 1. `loadAlignments`
 	- From BAM/FASTQ/ADAM/Parquet file format
@@ -85,7 +93,52 @@ Example usage:
 3. `DiscoverVariants` ($\sim 8$ seconds)
 4. `CallVariants`  ($\sim 15$ seconds)
 5. `HardFilterGenotypes`
-6. `saveAsParquet`
+6. `saveAsParquet` ($\sim 30$ seconds)
+
+
+# Avocado Biallelic Genotyper RDD Lineage
+
+	(200) MapPartitionsRDD[36] at map at GenomicRDD.scala:3755 []
+	  |   MapPartitionsRDD[35] at flatMap at HardFilterGenotypes.scala:246 []
+	  |   MapPartitionsRDD[34] at map at RewriteHets.scala:73 []
+	  |   MapPartitionsRDD[33] at map at BiallelicGenotyper.scala:569 []
+	  |   MapPartitionsRDD[32] at map at BiallelicGenotyper.scala:552 []
+	  |   MapPartitionsRDD[31] at rdd at BiallelicGenotyper.scala:551 []
+	  |   MapPartitionsRDD[30] at rdd at BiallelicGenotyper.scala:551 []
+	  |   MapPartitionsRDD[29] at rdd at BiallelicGenotyper.scala:551 []
+	  |   ShuffledRowRDD[28] at rdd at BiallelicGenotyper.scala:551 []
+	  +-(3) MapPartitionsRDD[27] at rdd at BiallelicGenotyper.scala:551 []
+	     |  MapPartitionsRDD[26] at rdd at BiallelicGenotyper.scala:551 []
+	     |  MapPartitionsRDD[25] at rdd at BiallelicGenotyper.scala:551 []
+	     |  MapPartitionsRDD[20] at flatMap at BiallelicGenotyper.scala:434 []
+	     |  MapPartitionsRDD[19] at map at BiallelicGenotyper.scala:113 []
+	     |  MapPartitionsRDD[18] at flatMap at TreeRegionJoin.scala:188 []
+	     |  MapPartitionsRDD[14] at flatMap at BiallelicGenotyper.scala:111 []
+	     |  MapPartitionsRDD[3] at map at PrefilterReads.scala:82 []
+	     |  MapPartitionsRDD[2] at filter at PrefilterReads.scala:81 []
+	     |  MapPartitionsRDD[1] at map at ADAMContext.scala:1327 []
+	     |  /home/jdeaton/Datasets/1000Genomes/NA12878/scratch/NA12878.algn.adam NewHadoopRDD[0] at newAPIHadoopFile at ADAMContext.scala:1318 []
+
+
+# Avocado Biallelic Genotyper RDD Lineage
+
+	(200) ShuffledRDD[17] at sortByKey at TreeRegionJoin.scala:45 []
+	  +-(200) MapPartitionsRDD[13] at keyBy at BiallelicGenotyper.scala:110 []
+	      |   MapPartitionsRDD[12] at map at DiscoverVariants.scala:101 []
+	      |   MapPartitionsRDD[11] at rdd at DiscoverVariants.scala:100 []
+	      |   MapPartitionsRDD[10] at rdd at DiscoverVariants.scala:100 []
+	      |   MapPartitionsRDD[9] at rdd at DiscoverVariants.scala:100 []
+	      |   ShuffledRowRDD[8] at rdd at DiscoverVariants.scala:100 []
+	      +-(3) MapPartitionsRDD[7] at rdd at DiscoverVariants.scala:100 []
+	         |  MapPartitionsRDD[6] at rdd at DiscoverVariants.scala:100 []
+	         |  MapPartitionsRDD[5] at rdd at DiscoverVariants.scala:100 []
+	         |  MapPartitionsRDD[4] at flatMap at DiscoverVariants.scala:79 []
+	         |  MapPartitionsRDD[3] at map at PrefilterReads.scala:82 []
+	         |  MapPartitionsRDD[2] at filter at PrefilterReads.scala:81 []
+	         |  MapPartitionsRDD[1] at map at ADAMContext.scala:1327 []
+	         |  /home/jdeaton/Datasets/1000Genomes/NA12878/scratch/NA12878.algn.adam NewHadoopRDD[0] at newAPIHadoopFile at ADAMContext.scala:1318 []
+
+
 
 # `DiscoverVariants`
 
