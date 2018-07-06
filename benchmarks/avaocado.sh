@@ -8,6 +8,9 @@
 
 set -e # Exit if error
 
+Green='\033[0;32m'
+NC='\033[0m' # No Color
+
 # The input sample
 SAMPLE="NA12878"
 INPUT_DIR="$HOME/Datasets/1000Genomes/NA12878"
@@ -42,43 +45,54 @@ JAVA_OPTS="$OUR_JAVA_OPTS"
 JAVA_OPTS="$JAVA_OPTS -Djava.library.path=$SPARK_LIBRARY_PATH"
 JAVA_OPTS="$JAVA_OPTS -Xms$SPARK_MEM -Xmx$SPARK_MEM"
 
-echo "==================== MARKING DUPLICATES, SORTING, TRANSFORMING  ========================="
-rm -r "$MKDUPS"
-adam-submit \
-    --conf spark.logLineage=true \
-    --conf spark.bigstream.xray.overwrite=true \
-    --conf spark.bigstream.xray.filename="mkdups-xray-log" \
-    --conf spark.bigstream.xray.dir="xray" \
-    --conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
-    --conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar \
+# Bigstream acceleration
+accelerate=$1
+if $accelerate; then
+  echo -e  "._:=** Using Bigstream acceleration **=:_."
+  bigstream="$HOME/opt/spark-bigstream"
+  spark_bigstream="$bigstream/spark-2.1.1-BIGSTREAM-bin-bigstream-spark-yarn-h2.7.2"
+  export LD_LIBRARY_PATH="$bigstream/libs"
+  export SPARK_HOME="$spark_bigstream"
+fi
+
+xray=false
+if $xray; then
+    echo -e  "Using X-Ray"
+    xray_dir="xray"
+    XRAY_FLAGS="--conf spark.bigstream.xray.overwrite=true"
+    XRAY_FLAGS="$XRAY_FLAGS --conf spark.bigstream.xray.dir=$xray_dir"
+    XRAY_FLAGS="$XRAY_FLAGS --conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener"
+    XRAY_FLAGS="$XRAY_FLAGS --conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar"
+
+    xray_extension="xray-log"
+    bsql_xray=bsqr."$xray_extension"
+fi
+
+
+echo -e  "${Green}==================== MARKING DUPLICATES, SORTING, TRANSFORMING  =========================${NC}"
+rm -rf "$MKDUPS"
+adam/bin/adam-submit \
+    --conf spark.bigstream.accelerate=$accelerate \
     -- transformAlignments \
     "$BAM" "$MKDUPS" \
     -mark_duplicate_reads \
-    -sort_reads
+    -sort_reads 2>&1 | tee mkdups.log
 
-echo "===================== BSQR ====================="
-rm -r "$BSQR"
-adam-submit \
-    --conf spark.logLineage=true \
-    --conf spark.bigstream.xray.overwrite=true \
-    --conf spark.bigstream.xray.filename="bsqr-xray-log" \
-    --conf spark.bigstream.xray.dir="xray" \
-    --conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
-    --conf spark.driver.extraClassPath=spark-bigstream-xray-2.0.3-BIGSTREAM.jar \
+echo -e  "${Green}===================== BSQR =====================${NC}"
+rm -rf "$BSQR"
+adam/bin/adam-submit \
+    --conf spark.bigstream.accelerate=$accelerate \
+    $XRAY_FLAGS --conf spark.bigstream.xray.filename=bsqr."$xray_extension" \
     -- transformAlignments \
     "$MKDUPS" "$BSQR" \
-    -recalibrate_base_qualities
+    -recalibrate_base_qualities 2>&1 | tee bsqr.log
     # -known_snps "$known_snps"
 
-echo " ===================== REALIGNMENT ========================"
-rm -r "$REALIGNED"
-adam-submit \
-    --conf spark.logLineage=true \
-    --conf spark.bigstream.xray.overwrite=true \
-    --conf spark.bigstream.xray.filename="realign-xray-log" \
-    --conf spark.bigstream.xray.dir="xray" \
-    --conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
-    --conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar \
+echo -e  "${Green}===================== REALIGNMENT ========================${NC}"
+rm -rf "$REALIGNED"
+adam/bin/adam-submit \
+    --conf spark.bigstream.accelerate=$accelerate \
+    $XRAY_FLAGS --conf spark.bigstream.xray.filename=realign."$xray_extension" \
     -- transformAlignments \
     "$BSQR" "$REALIGNED" \
     -realign_indels \
@@ -87,33 +101,26 @@ adam-submit \
     -max_reads_per_target 256 \
     -max_target_size 2048 \
     -limit_projection \
-    -log_odds_threshold 0.5 
+    -log_odds_threshold 0.5 2>&1 | tee realign.log
     # f-reference "$REF_FA"
    
 # REALIGNED="$MKDUPS" # skip BSQR and realignment
 
-echo "==================== BIALLELIC GENOTYPER ========================="
-rm -r "$GENOTYPED"
-avocado-submit \
-	 --conf spark.logLineage=true \
-   --conf spark.bigstream.xray.overwrite=true \
-   --conf spark.bigstream.xray.filename="genotyper-xray-log" \
-   --conf spark.bigstream.xray.dir="xray" \
-   --conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
-	 --conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar \
-	 -- biallelicGenotyper "$REALIGNED" "$GENOTYPED" -no_chr_prefixes
+echo -e  "${Green}==================== BIALLELIC GENOTYPER =========================${NC}"
+rm -rf "$GENOTYPED"
+avocado/bin/avocado-submit \
+    --conf spark.bigstream.accelerate=$accelerate \
+    $XRAY_FLAGS --conf spark.bigstream.xray.filename=genotyper."$xray_extension" \
+	-- biallelicGenotyper "$REALIGNED" "$GENOTYPED" -no_chr_prefixes 2>&1 | tee genotyper.log
 
-echo "==================== JOINTER  ========================="
-rm -r "$VCF"
-avocado-submit \
-    --conf spark.logLinear=true \
-    --conf spark.bigstream.xray.overwrite=true \
-    --conf spark.bigstream.xray.filename="joiner-xray-log" \
-    --conf spark.bigstream.xray.dir="xray" \
-    --conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
-    --conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar \
+echo -e  "${Green}==================== JOINTER  =========================${NC}"
+rm -rf "$VCF"
+avocado/bin/avocado-submit \
+    --conf spark.bigstream.accelerate=$accelerate \
+    $XRAY_FLAGS --conf spark.bigstream.xray.filename=genotyper."$xray_extension" \
     -- jointer \
     "$GENOTYPED" "$VCF" \
-    -single
+    -single 2>&1 | tee joiner.log
 
-echo "==================== DONE. ========================="
+echo -e  "${Green}==================== DONE. =========================${NC}"
+
