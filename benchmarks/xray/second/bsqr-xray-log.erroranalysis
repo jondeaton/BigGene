@@ -1,0 +1,23 @@
+Bigstream-blsa-version: 1.0.1
+Bigstream-blsa-hash: e864baf
+========================================================================================================================
+Log file: /home/jdeaton/repos/Big-gene/benchmarks/xray/bsqr-xray-log 
+========================================================================================================================
+Issue Signatures
+========================================
+
+No data found.
+
+blsa Log:
+========================================================================================================================
+[2018-06-29 17:01:02,804 DEBUG] blsa:331, __init__():  Processing: bsqr-xray-log
+[2018-06-29 17:01:02,805 DEBUG] blsa:2738, scrapeSparkVersion():  Scrap line #1:Xray log Spark version: 2.1.1
+	2.1.1
+[2018-06-29 17:01:02,947 DEBUG] blsa:368, printOutputMsg():  Writing results to :
+[2018-06-29 17:01:02,948 DEBUG] blsa:373, printOutputMsg():  	bsqr-xray-log.verbose
+[2018-06-29 17:01:02,948 DEBUG] blsa:373, printOutputMsg():  	bsqr-xray-log.physplan
+[2018-06-29 17:01:02,948 DEBUG] blsa:373, printOutputMsg():  	bsqr-xray-log.summary
+[2018-06-29 17:01:02,948 DEBUG] blsa:373, printOutputMsg():  	bsqr-xray-log.execinfo
+[2018-06-29 17:01:02,981 DEBUG] blsa:373, printOutputMsg():  	bsqr-xray-log.metrics
+[2018-06-29 17:01:02,981 DEBUG] blsa:373, printOutputMsg():  	bsqr-xray-log.erroranalysis
+[2018-06-29 17:01:02,985 DEBUG] results_deployer.py:168, create_tar_gz():  Archive Customer_Cluster_20180629-170102.tar.gz successfully created

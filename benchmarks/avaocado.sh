@@ -22,6 +22,7 @@ known_snps="$dbSNP/common_all_20180418.vcf.gz"
 # Scratch space
 SCRATCH="$INPUT_DIR/scratch"
 INTERLEAVED="$SCRATCH/$SAMPLE.ifq"
+log_dir="logs"
 
 # Intermediate files (and output)
 BAM="$INPUT_DIR/little-subsampled.bam"
@@ -71,26 +72,26 @@ fi
 
 echo -e  "${Green}==================== MARKING DUPLICATES, SORTING, TRANSFORMING  =========================${NC}"
 rm -rf "$MKDUPS"
-adam/bin/adam-submit \
+adam-submit \
     --conf spark.bigstream.accelerate=$accelerate \
     -- transformAlignments \
     "$BAM" "$MKDUPS" \
     -mark_duplicate_reads \
-    -sort_reads 2>&1 | tee mkdups.log
+    -sort_reads 2>&1 | tee "$log_dir/mkdups.log"
 
 echo -e  "${Green}===================== BSQR =====================${NC}"
 rm -rf "$BSQR"
-adam/bin/adam-submit \
+adam-submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=bsqr."$xray_extension" \
     -- transformAlignments \
     "$MKDUPS" "$BSQR" \
-    -recalibrate_base_qualities 2>&1 | tee bsqr.log
+    -recalibrate_base_qualities 2>&1 | tee "$log_dir/bsqr.log"
     # -known_snps "$known_snps"
 
 echo -e  "${Green}===================== REALIGNMENT ========================${NC}"
 rm -rf "$REALIGNED"
-adam/bin/adam-submit \
+adam-submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=realign."$xray_extension" \
     -- transformAlignments \
@@ -101,26 +102,26 @@ adam/bin/adam-submit \
     -max_reads_per_target 256 \
     -max_target_size 2048 \
     -limit_projection \
-    -log_odds_threshold 0.5 2>&1 | tee realign.log
+    -log_odds_threshold 0.5 2>&1 | tee "$log_dir/realign.log"
     # f-reference "$REF_FA"
    
 # REALIGNED="$MKDUPS" # skip BSQR and realignment
 
 echo -e  "${Green}==================== BIALLELIC GENOTYPER =========================${NC}"
 rm -rf "$GENOTYPED"
-avocado/bin/avocado-submit \
+avocado-submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=genotyper."$xray_extension" \
-	-- biallelicGenotyper "$REALIGNED" "$GENOTYPED" -no_chr_prefixes 2>&1 | tee genotyper.log
+	-- biallelicGenotyper "$REALIGNED" "$GENOTYPED" -no_chr_prefixes 2>&1 | tee i"$log_dir/genotyper.log"
 
 echo -e  "${Green}==================== JOINTER  =========================${NC}"
 rm -rf "$VCF"
-avocado/bin/avocado-submit \
+avocado-submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=genotyper."$xray_extension" \
     -- jointer \
     "$GENOTYPED" "$VCF" \
-    -single 2>&1 | tee joiner.log
+    -single 2>&1 | tee "$log_dir/joiner.log"
 
 echo -e  "${Green}==================== DONE. =========================${NC}"
 

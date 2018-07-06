@@ -1,0 +1,114 @@
+Bigstream-blsa-version: 1.0.1
+Bigstream-blsa-hash: e864baf
+=================================
+Spark version: 2.1.1
+Number of closures found in joiner-xray-log: 0
+Number of analyzed closures in joiner-xray-log: 0
+=================================
+Extracted information from joiner-xray-log:
+=================================
+
+Summary of finished stage: Stage(0, 0); Name: 'keyBy at GenotypeRDD.scala:283'; Status: succeeded; numTasks: 200; Took: 2023 msec
+task runtime:(count: 200, mean: 83.045000, stdev: 142.847832, max: 843.000000, min: 16.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	16.0 ms	20.0 ms	23.0 ms	32.0 ms	44.0 ms	77.0 ms	109.0 ms	239.0 ms	843.0 ms
+shuffle bytes written:(count: 200, mean: 103.125000, stdev: 154.212579, max: 833.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	202.0 B	391.0 B	406.0 B	833.0 B
+fetch wait time:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 200, mean: 1343.315000, stdev: 183.244525, max: 1704.000000, min: 1107.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	1107.0 B	1194.0 B	1194.0 B	1194.0 B	1194.0 B	1544.0 B	1617.0 B	1617.0 B	1704.0 B
+executor (non-fetch) time pct: (count: 200, mean: 43.599221, stdev: 22.506796, max: 93.877551, min: 7.407407)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 7 %	13 %	15 %	23 %	40 %	62 %	75 %	83 %	94 %
+fetch wait time pct: (count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 200, mean: 56.400779, stdev: 22.506796, max: 92.592593, min: 6.122449)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 6 %	17 %	25 %	38 %	61 %	77 %	85 %	88 %	93 %
+================================
+Summary of finished stage: Stage(1, 0); Name: 'sortByKey at GenomicRDD.scala:625'; Status: succeeded; numTasks: 200; Took: 1077 msec
+task runtime:(count: 200, mean: 43.535000, stdev: 19.655757, max: 163.000000, min: 19.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	19.0 ms	24.0 ms	26.0 ms	32.0 ms	38.0 ms	51.0 ms	61.0 ms	81.0 ms	163.0 ms
+shuffle bytes written:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+fetch wait time:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 200, mean: 2433.590000, stdev: 28.519500, max: 2519.000000, min: 2415.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.5 KB
+executor (non-fetch) time pct: (count: 200, mean: 61.732112, stdev: 13.592811, max: 94.482759, min: 34.482759)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	34 %	39 %	43 %	51 %	64 %	72 %	79 %	83 %	94 %
+fetch wait time pct: (count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 200, mean: 38.267888, stdev: 13.592811, max: 65.517241, min: 5.517241)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 6 %	18 %	21 %	29 %	37 %	50 %	57 %	61 %	66 %
+================================
+Summary of finished stage: Stage(3, 0); Name: 'flatMap at GenomicRDD.scala:599'; Status: succeeded; numTasks: 200; Took: 674 msec
+task runtime:(count: 200, mean: 27.420000, stdev: 10.722108, max: 64.000000, min: 10.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	10.0 ms	14.0 ms	15.0 ms	19.0 ms	26.0 ms	33.0 ms	40.0 ms	50.0 ms	64.0 ms
+shuffle bytes written:(count: 200, mean: 121.020000, stdev: 183.515775, max: 952.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	241.0 B	468.0 B	484.0 B	952.0 B
+fetch wait time:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 200, mean: 1211.345000, stdev: 185.992381, max: 1532.000000, min: 1016.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	1016.0 B	1016.0 B	1016.0 B	1095.0 B	1095.0 B	1445.0 B	1445.0 B	1445.0 B	1532.0 B
+executor (non-fetch) time pct: (count: 200, mean: 15.771371, stdev: 17.374989, max: 66.666667, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 3 %	 7 %	27 %	44 %	52 %	67 %
+fetch wait time pct: (count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 200, mean: 84.228629, stdev: 17.374989, max: 100.000000, min: 33.333333)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	33 %	48 %	56 %	73 %	93 %	97 %	100 %	100 %	100 %
+================================
+Summary of finished stage: Stage(4, 0); Name: 'saveAsNewAPIHadoopFile at VariantContextRDD.scala:404'; Status: succeeded; numTasks: 102; Took: 1038 msec
+task runtime:(count: 102, mean: 81.127451, stdev: 31.607790, max: 187.000000, min: 38.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	38.0 ms	50.0 ms	54.0 ms	64.0 ms	73.0 ms	86.0 ms	109.0 ms	172.0 ms	187.0 ms
+shuffle bytes written:(count: 102, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+fetch wait time:(count: 102, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 102, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 102, mean: 1861.176471, stdev: 30.961523, max: 2008.000000, min: 1836.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	1836.0 B	1848.0 B	1848.0 B	1848.0 B	1848.0 B	1848.0 B	1921.0 B	1921.0 B	2008.0 B
+executor (non-fetch) time pct: (count: 102, mean: 68.792032, stdev: 9.839832, max: 82.568807, min: 39.534884)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	40 %	49 %	55 %	63 %	72 %	77 %	79 %	80 %	83 %
+fetch wait time pct: (count: 102, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 102, mean: 31.207968, stdev: 9.839832, max: 60.465116, min: 17.431193)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	17 %	20 %	21 %	23 %	29 %	37 %	45 %	51 %	60 %
+================================

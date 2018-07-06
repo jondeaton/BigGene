@@ -1,0 +1,192 @@
+Bigstream-blsa-version: 1.0.1
+Bigstream-blsa-hash: e864baf
+=================================
+Spark version: 2.1.1
+Number of closures found in genotyper-xray-log: 0
+Number of analyzed closures in genotyper-xray-log: 0
+=================================
+Extracted information from genotyper-xray-log:
+=================================
+
+Summary of finished stage: Stage(0, 0); Name: 'rdd at DiscoverVariants.scala:100'; Status: succeeded; numTasks: 3; Took: 7755 msec
+task runtime:(count: 3, mean: 7669.666667, stdev: 68.926692, max: 7746.000000, min: 7579.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	7.6 s	7.6 s	7.6 s	7.6 s	7.7 s	7.7 s	7.7 s	7.7 s	7.7 s
+shuffle bytes written:(count: 3, mean: 192935.333333, stdev: 2343.604110, max: 195959.000000, min: 190248.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	185.8 KB	185.8 KB	185.8 KB	185.8 KB	188.1 KB	191.4 KB	191.4 KB	191.4 KB	191.4 KB
+fetch wait time:(count: 3, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 3, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 3, mean: 2442.000000, stdev: 0.000000, max: 2442.000000, min: 2442.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB	2.4 KB
+executor (non-fetch) time pct: (count: 3, mean: 96.878738, stdev: 0.082900, max: 96.966176, min: 96.767384)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	97 %	97 %	97 %	97 %	97 %	97 %	97 %	97 %	97 %
+fetch wait time pct: (count: 3, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 3, mean: 3.121262, stdev: 0.082900, max: 3.232616, min: 3.033824)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 3 %	 3 %	 3 %	 3 %	 3 %	 3 %	 3 %	 3 %	 3 %
+================================
+Summary of finished stage: Stage(1, 0); Name: 'sortByKey at TreeRegionJoin.scala:45'; Status: succeeded; numTasks: 200; Took: 895 msec
+task runtime:(count: 200, mean: 37.510000, stdev: 20.116160, max: 120.000000, min: 14.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	14.0 ms	18.0 ms	20.0 ms	25.0 ms	32.0 ms	44.0 ms	56.0 ms	79.0 ms	120.0 ms
+shuffle bytes written:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+fetch wait time:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 200, mean: 2798.525000, stdev: 35.351653, max: 2935.000000, min: 2768.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	2.7 KB	2.7 KB	2.7 KB	2.7 KB	2.7 KB	2.7 KB	2.8 KB	2.8 KB	2.9 KB
+executor (non-fetch) time pct: (count: 200, mean: 24.956739, stdev: 14.392281, max: 64.285714, min: 6.250000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 6 %	 9 %	11 %	14 %	20 %	33 %	48 %	58 %	64 %
+fetch wait time pct: (count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 200, mean: 75.043261, stdev: 14.392281, max: 93.750000, min: 35.714286)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	36 %	42 %	52 %	67 %	80 %	86 %	89 %	92 %	94 %
+================================
+Summary of finished stage: Stage(3, 0); Name: 'keyBy at BiallelicGenotyper.scala:110'; Status: succeeded; numTasks: 200; Took: 1315 msec
+task runtime:(count: 200, mean: 53.815000, stdev: 19.760333, max: 122.000000, min: 19.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	19.0 ms	26.0 ms	29.0 ms	38.0 ms	51.0 ms	67.0 ms	82.0 ms	90.0 ms	122.0 ms
+shuffle bytes written:(count: 200, mean: 112.575000, stdev: 102.742174, max: 480.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	94.0 B	188.0 B	282.0 B	290.0 B	480.0 B
+fetch wait time:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 200, mean: 3182.600000, stdev: 125.691448, max: 3343.000000, min: 2987.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	2.9 KB	2.9 KB	2.9 KB	2.9 KB	3.2 KB	3.2 KB	3.2 KB	3.3 KB	3.3 KB
+executor (non-fetch) time pct: (count: 200, mean: 35.081510, stdev: 18.982034, max: 76.923077, min: 4.838710)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 5 %	 7 %	 9 %	16 %	36 %	50 %	60 %	65 %	77 %
+fetch wait time pct: (count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 200, mean: 64.918490, stdev: 18.982034, max: 95.161290, min: 23.076923)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	23 %	36 %	40 %	50 %	65 %	84 %	91 %	93 %	95 %
+================================
+Summary of finished stage: Stage(4, 0); Name: 'collect at TreeRegionJoin.scala:46'; Status: succeeded; numTasks: 200; Took: 996 msec
+task runtime:(count: 200, mean: 40.420000, stdev: 11.394016, max: 89.000000, min: 21.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	21.0 ms	25.0 ms	28.0 ms	31.0 ms	39.0 ms	48.0 ms	55.0 ms	61.0 ms	89.0 ms
+shuffle bytes written:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+fetch wait time:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 200, mean: 1765.700000, stdev: 46.001196, max: 2111.000000, min: 1736.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	1736.0 B	1738.0 B	1738.0 B	1738.0 B	1738.0 B	1770.0 B	1825.0 B	1857.0 B	2.1 KB
+executor (non-fetch) time pct: (count: 200, mean: 44.518712, stdev: 11.680006, max: 75.510204, min: 21.875000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	22 %	26 %	30 %	36 %	43 %	54 %	61 %	66 %	76 %
+fetch wait time pct: (count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 200, mean: 55.481288, stdev: 11.680006, max: 78.125000, min: 24.489796)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	24 %	35 %	39 %	47 %	57 %	64 %	70 %	74 %	78 %
+================================
+Summary of finished stage: Stage(5, 0); Name: 'run at ThreadPoolExecutor.java:1149'; Status: succeeded; numTasks: 8; Took: 324 msec
+task runtime:(count: 8, mean: 257.750000, stdev: 22.862360, max: 283.000000, min: 226.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	226.0 ms	226.0 ms	226.0 ms	239.0 ms	270.0 ms	281.0 ms	283.0 ms	283.0 ms	283.0 ms
+shuffle bytes written:(count: 8, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+fetch wait time:(count: 8, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 8, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 8, mean: 578594.750000, stdev: 13820.112805, max: 584697.000000, min: 542051.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	529.3 KB	529.3 KB	529.3 KB	569.6 KB	570.2 KB	570.4 KB	571.0 KB	571.0 KB	571.0 KB
+executor (non-fetch) time pct: (count: 8, mean: 54.378413, stdev: 7.677455, max: 64.159292, min: 40.213523)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	40 %	40 %	40 %	51 %	56 %	62 %	64 %	64 %	64 %
+fetch wait time pct: (count: 8, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 8, mean: 45.621587, stdev: 7.677455, max: 59.786477, min: 35.840708)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	36 %	36 %	36 %	39 %	45 %	54 %	60 %	60 %	60 %
+================================
+Summary of finished stage: Stage(6, 0); Name: 'rdd at BiallelicGenotyper.scala:551'; Status: succeeded; numTasks: 3; Took: 5494 msec
+task runtime:(count: 3, mean: 5434.333333, stdev: 42.820037, max: 5493.000000, min: 5392.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	5.4 s	5.4 s	5.4 s	5.4 s	5.4 s	5.5 s	5.5 s	5.5 s	5.5 s
+shuffle bytes written:(count: 3, mean: 19801.000000, stdev: 553.644290, max: 20347.000000, min: 19042.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	18.6 KB	18.6 KB	18.6 KB	18.6 KB	19.5 KB	19.9 KB	19.9 KB	19.9 KB	19.9 KB
+fetch wait time:(count: 3, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms
+remote bytes read:(count: 3, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 3, mean: 3097.000000, stdev: 0.000000, max: 3097.000000, min: 3097.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	3.0 KB	3.0 KB	3.0 KB	3.0 KB	3.0 KB	3.0 KB	3.0 KB	3.0 KB	3.0 KB
+executor (non-fetch) time pct: (count: 3, mean: 98.264082, stdev: 0.005695, max: 98.270526, min: 98.256677)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	98 %	98 %	98 %	98 %	98 %	98 %	98 %	98 %	98 %
+fetch wait time pct: (count: 3, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 3, mean: 1.735918, stdev: 0.005695, max: 1.743323, min: 1.729474)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 2 %	 2 %	 2 %	 2 %	 2 %	 2 %	 2 %	 2 %	 2 %
+================================
+Summary of finished stage: Stage(7, 0); Name: 'saveAsNewAPIHadoopFile at GenomicRDD.scala:3757'; Status: succeeded; numTasks: 200; Took: 21154 msec
+task runtime:(count: 200, mean: 841.780000, stdev: 229.715567, max: 1317.000000, min: 340.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	340.0 ms	453.0 ms	518.0 ms	692.0 ms	845.0 ms	1.0 s	1.1 s	1.2 s	1.3 s
+shuffle bytes written:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+fetch wait time:(count: 200, mean: 0.005000, stdev: 0.070534, max: 1.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	0.0 ms	1.0 ms
+remote bytes read:(count: 200, mean: 0.000000, stdev: 0.000000, max: 0.000000, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B	0.0 B
+task result size:(count: 200, mean: 3541.965000, stdev: 47.345156, max: 3676.000000, min: 3504.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	3.4 KB	3.4 KB	3.4 KB	3.4 KB	3.4 KB	3.5 KB	3.5 KB	3.5 KB	3.6 KB
+executor (non-fetch) time pct: (count: 200, mean: 33.262473, stdev: 22.081380, max: 82.567216, min: 4.093098)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 4 %	 5 %	 7 %	13 %	28 %	52 %	63 %	68 %	83 %
+fetch wait time pct: (count: 200, mean: 0.001104, stdev: 0.015570, max: 0.220751, min: 0.000000)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %	 0 %
+other time pct: (count: 200, mean: 66.736423, stdev: 22.080208, max: 95.906902, min: 17.432784)
+	0%	5%	10%	25%	50%	75%	90%	95%	100%
+	17 %	33 %	38 %	49 %	73 %	88 %	93 %	95 %	96 %
+================================

@@ -1,0 +1,49 @@
+Bigstream-blsa-version: 1.0.1
+Bigstream-blsa-hash: e864baf
+For executor ip: localhost
+    Timestamp     Event  ExecID  DynID  DynID_retry  TaskID  TID  TaskID_retry  Partition  Accelerated  TaskRunTime(ms)
+=======================================================================================================================
+1530315118360  Starting  driver      0            0       0    0             0         -1          N/A                 
+1530315118378  Starting  driver      0            0       1    1             0         -1          N/A                 
+1530315118379  Starting  driver      0            0       2    2             0         -1          N/A                 
+1530315123234  Finished  driver      0            0       1    1             0         -1          N/A             4856
+1530315123560  Finished  driver      0            0       0    0             0         -1          N/A             5200
+1530315123820  Finished  driver      0            0       2    2             0         -1          N/A             5441
+1530315123922  Starting  driver      1            0       3    3             0         -1          N/A                 
+1530315123925  Starting  driver      1            0       4    4             0         -1          N/A                 
+1530315123926  Starting  driver      1            0       5    5             0         -1          N/A                 
+1530315130657  Finished  driver      1            0       4    4             0         -1          N/A             6732
+1530315131108  Finished  driver      1            0       3    3             0         -1          N/A             7186
+1530315131471  Finished  driver      1            0       5    5             0         -1          N/A             7545
+1530315131489  Starting  driver      2            0       6    6             0         -1          N/A                 
+1530315131491  Starting  driver      2            0       7    7             0         -1          N/A                 
+1530315131492  Starting  driver      2            0       8    8             0         -1          N/A                 
+1530315135650  Finished  driver      2            0       7    7             0         -1          N/A             4159
+1530315135662  Finished  driver      2            0       8    8             0         -1          N/A             4170
+1530315135666  Finished  driver      2            0       6    6             0         -1          N/A             4177
+1530315135785  Starting  driver      4            0       9    9             0         -1          N/A                 
+1530315135787  Starting  driver      4            0      11   11             0         -1          N/A                 
+1530315135787  Starting  driver      4            0      10   10             0         -1          N/A                 
+1530315140253  Finished  driver      4            0      11   11             0         -1          N/A             4466
+1530315140259  Finished  driver      4            0       9    9             0         -1          N/A             4474
+1530315140279  Finished  driver      4            0      10   10             0         -1          N/A             4492
+1530315140287  Starting  driver      5            0      12   12             0         -1          N/A                 
+1530315140288  Starting  driver      5            0      14   14             0         -1          N/A                 
+1530315140288  Starting  driver      5            0      13   13             0         -1          N/A                 
+1530315140323  Finished  driver      5            0      14   14             0         -1          N/A               35
+1530315140326  Finished  driver      5            0      13   13             0         -1          N/A               38
+1530315140326  Finished  driver      5            0      12   12             0         -1          N/A               39
+1530315140412  Starting  driver      7            0      15   15             0         -1          N/A                 
+1530315140413  Starting  driver      7            0      17   17             0         -1          N/A                 
+1530315140413  Starting  driver      7            0      16   16             0         -1          N/A                 
+1530315147018  Finished  driver      7            0      17   17             0         -1          N/A             6605
+1530315147071  Finished  driver      7            0      15   15             0         -1          N/A             6659
+1530315147077  Finished  driver      7            0      16   16             0         -1          N/A             6664
+1530315147092  Starting  driver      8            0      18   18             0         -1          N/A                 
+1530315147093  Starting  driver      8            0      20   20             0         -1          N/A                 
+1530315147093  Starting  driver      8            0      19   19             0         -1          N/A                 
+1530315213848  Finished  driver      8            0      20   20             0         -1          N/A            66755
+1530315214718  Finished  driver      8            0      19   19             0         -1          N/A            67625
+1530315214819  Finished  driver      8            0      18   18             0         -1          N/A            67727
+
+===================================
