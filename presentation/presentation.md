@@ -11,13 +11,15 @@ theme:
 
 [//]: # (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3198575/pdf/btr509.pdf)
 
-[//]: # (pandoc presentation.md -t beamer -o final.pdf)
+[//]: # (pandoc presentation.md -t beamer -o final.pdf -V fontsize=10pt)
 
 # Topics
 
 + ADAM/Avocado Schemas & Class heigherarchy
-+ Biallectic Genotyper Execution (variant calling)
-  - Cannonical SNP caller algorithm
++ Biallectic Genotyper Execution
+    - Variant Discovery
+    - Variant Calling
+- Cannonical SNP caller algorithm
 
 # ADAM Schemas Heigherarchy
 

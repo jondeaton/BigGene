@@ -37,6 +37,10 @@ REF_DIR="$HOME/Datasets/GRCh38/Homo_sapiens/NCBI/GRCh38/Sequence/WholeGenomeFast
 REF_FA="$REF_DIR/genome.fa"
 REF_IDX="$REF_DIR/genome.dict"
 
+#ADAM/Avocado setup
+adam_submit="../bdgenomics/adam/bin/adam-submit"
+avocado_submit="../bdgenomics/avocado/bin/avocado-submit"
+
 # Set SPARK_MEM if it isn't already set since we also use it for this process
 SPARK_MEM=${SPARK_MEM:-6g}
 export SPARK_MEM
@@ -72,7 +76,7 @@ fi
 
 echo -e  "${Green}==================== MARKING DUPLICATES, SORTING, TRANSFORMING  =========================${NC}"
 rm -rf "$MKDUPS"
-adam-submit \
+$adam_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     -- transformAlignments \
     "$BAM" "$MKDUPS" \
@@ -81,7 +85,7 @@ adam-submit \
 
 echo -e  "${Green}===================== BSQR =====================${NC}"
 rm -rf "$BSQR"
-adam-submit \
+$adam_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=bsqr."$xray_extension" \
     -- transformAlignments \
@@ -91,7 +95,7 @@ adam-submit \
 
 echo -e  "${Green}===================== REALIGNMENT ========================${NC}"
 rm -rf "$REALIGNED"
-adam-submit \
+$adam_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=realign."$xray_extension" \
     -- transformAlignments \
@@ -109,14 +113,14 @@ adam-submit \
 
 echo -e  "${Green}==================== BIALLELIC GENOTYPER =========================${NC}"
 rm -rf "$GENOTYPED"
-avocado-submit \
+$avocado_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=genotyper."$xray_extension" \
 	-- biallelicGenotyper "$REALIGNED" "$GENOTYPED" -no_chr_prefixes 2>&1 | tee i"$log_dir/genotyper.log"
 
 echo -e  "${Green}==================== JOINTER  =========================${NC}"
 rm -rf "$VCF"
-avocado-submit \
+$avocado_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=genotyper."$xray_extension" \
     -- jointer \
