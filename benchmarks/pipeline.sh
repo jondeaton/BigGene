@@ -6,26 +6,26 @@
 # To truncage: 
 # samtools view -h NA12878_phased_possorted_bam.bam | head -n 10000000 | samtools view -bS - > little.bam
 
-set -e # Exit if error
+# set -e # Exit if error
 
 Green='\033[0;32m'
 NC='\033[0m' # No Color
 
 # The input sample
-SAMPLE="NA12878"
-INPUT_DIR="$HOME/Datasets/1000Genomes/NA12878"
+in=$1
+SAMPLE=`basename $in .bam`
 
 # Database of known SNPs
 dbSNP="$HOME/Datasets/dbSNP"
 known_snps="$dbSNP/common_all_20180418.vcf.gz"
 
 # Scratch space
-SCRATCH="$INPUT_DIR/scratch"
+SCRATCH=$2
 INTERLEAVED="$SCRATCH/$SAMPLE.ifq"
 log_dir="logs"
 
 # Intermediate files (and output)
-BAM="$INPUT_DIR/little-subsampled.bam"
+BAM="$in"
 MKDUPS="$SCRATCH/$SAMPLE.mkdups.adam"
 BSQR="$SCRATCH/$SAMPLE.bsqr.adam"
 REALIGNED="$SCRATCH/$SAMPLE.algn.adam"
@@ -51,7 +51,7 @@ JAVA_OPTS="$JAVA_OPTS -Djava.library.path=$SPARK_LIBRARY_PATH"
 JAVA_OPTS="$JAVA_OPTS -Xms$SPARK_MEM -Xmx$SPARK_MEM"
 
 # Bigstream acceleration
-accelerate=$1
+accelerate=$3
 if $accelerate; then
   echo -e  "._:=** Using Bigstream acceleration **=:_."
   bigstream="$HOME/opt/spark-bigstream"
@@ -73,29 +73,35 @@ if $xray; then
     bsql_xray=bsqr."$xray_extension"
 fi
 
-
 echo -e  "${Green}==================== MARKING DUPLICATES, SORTING, TRANSFORMING  =========================${NC}"
 rm -rf "$MKDUPS"
-$adam_submit \
+start=`date +%s`
+time $adam_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     -- transformAlignments \
     "$BAM" "$MKDUPS" \
     -mark_duplicate_reads \
     -sort_reads 2>&1 | tee "$log_dir/mkdups.log"
+end=`date +%s`
+mkdups_time=$((end-start))
 
 echo -e  "${Green}===================== BSQR =====================${NC}"
 rm -rf "$BSQR"
-$adam_submit \
+start=`date +%s`
+time $adam_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=bsqr."$xray_extension" \
     -- transformAlignments \
     "$MKDUPS" "$BSQR" \
     -recalibrate_base_qualities 2>&1 | tee "$log_dir/bsqr.log"
     # -known_snps "$known_snps"
+end=`date +%s`
+bsqr_time=$((end-start))
 
 echo -e  "${Green}===================== REALIGNMENT ========================${NC}"
 rm -rf "$REALIGNED"
-$adam_submit \
+start=`date +%s`
+time $adam_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=realign."$xray_extension" \
     -- transformAlignments \
@@ -108,24 +114,35 @@ $adam_submit \
     -limit_projection \
     -log_odds_threshold 0.5 2>&1 | tee "$log_dir/realign.log"
     # f-reference "$REF_FA"
-   
-# REALIGNED="$MKDUPS" # skip BSQR and realignment
+end=`date +%s`
+realign_time=$((end-start))
 
 echo -e  "${Green}==================== BIALLELIC GENOTYPER =========================${NC}"
 rm -rf "$GENOTYPED"
-$avocado_submit \
+start=`date +%s`
+time $avocado_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=genotyper."$xray_extension" \
 	-- biallelicGenotyper "$REALIGNED" "$GENOTYPED" -no_chr_prefixes 2>&1 | tee i"$log_dir/genotyper.log"
+end=`date +%s`
+genotyper_time=$((end-start))
 
 echo -e  "${Green}==================== JOINTER  =========================${NC}"
 rm -rf "$VCF"
-$avocado_submit \
+start=`date +%s`
+time $avocado_submit \
     --conf spark.bigstream.accelerate=$accelerate \
     $XRAY_FLAGS --conf spark.bigstream.xray.filename=genotyper."$xray_extension" \
     -- jointer \
     "$GENOTYPED" "$VCF" \
     -single 2>&1 | tee "$log_dir/joiner.log"
+end=`date +%s`
+jointer_time=$((end-start))
 
 echo -e  "${Green}==================== DONE. =========================${NC}"
 
+echo "Mark Duplicates: $mkdups_time s"
+echo "BSQR: $bsqr_time s"
+echo "Realignment: $realign_time s"
+echo "Biallelic Genotyper: $genotyper_time s"
+echo "Jointer: $jointer_time s"

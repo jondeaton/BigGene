@@ -20,6 +20,5 @@ avocado/bin/avocado-submit \
     --conf spark.logLineage=true \
     --conf spark.driver.extraJavaOptions=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 \
     --conf spark.network.timeout=100000000 \
-    -- biallelicGenotyper "$alignment" "$variants_out" \
-
-
+    --conf spark.eventLog.enabled=true \
+    -- biallelicGenotyper "$alignment" "$variants_out" 2>&1
