@@ -27,4 +27,5 @@ avocado/bin/avocado-submit \
     --master local[*] \
     --conf spark.bigstream.accelerate=true \
     --driver-memory 5g \
+    --conf  spark.bigstream.qfe.optimizationSelectionPolicy=disableUDFs:disableHadoopPartitioning:disableNestedSchema:blacklistedOperators=InMemoryScan \
     -- biallelicGenotyper "$alignment" "$variants_out" 2>&1 | tee "$log_file"

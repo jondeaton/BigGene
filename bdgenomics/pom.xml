@@ -10,6 +10,7 @@
         <module>adam</module>
         <module>avocado</module>
         <module>bdg-formats</module>
+        <module>spark_changes</module>
     </modules>
 </project>
 

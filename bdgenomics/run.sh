@@ -1,7 +1,5 @@
 #!/bin/sh
 
-export SPARK_HOME="/opt/spark-2.3.1/"
-
 # Set JAVA_OPTS to be able to load native libraries and to set heap size
 JAVA_OPTS="$OUR_JAVA_OPTS"
 JAVA_OPTS="$JAVA_OPTS -Djava.library.path=$SPARK_LIBRARY_PATH"
@@ -21,4 +19,5 @@ avocado/bin/avocado-submit \
     --master "local[*]" \
     --conf spark.logLineage=true \
     --conf spark.eventLog.enabled=true \
+    --conf spark.driver.extraClassPath=$HOME/repos/BigGene/bdgenomics/spark_changes/target/spark-changes-2.1.1-7.jar \
     -- biallelicGenotyper "$alignment" "$variants_out" 
