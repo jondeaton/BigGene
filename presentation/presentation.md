@@ -148,12 +148,14 @@ Goal: using reference alignment data, discover all of the places where this new 
 - Input: RDD of reads i.e. `RDD[AlignmentRecord]`
 
 First two steps:
+
 1.  Map `variantsInRead` over the `RDD[AlignmentRecord]`
 	- `variantRdd = rdd.flatMap(variantsInRead)`
 	- `variantsInRead` loops over CIGAR `string` in each `AlignmentRecord`
 		+ CIGAR `string` was created during alignment
 		+ `"42M5D56M"` = "$42$ matchnig, $5$ deleted bases,$56$ matchnig"
 		+ Emits a stream of variants for each CIGAR `string`
+
 2. Convert `variantsInRead` (RDD) to Dataframe
 
 # `DiscoverVariants` continued...
