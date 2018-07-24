@@ -2,7 +2,7 @@
 
 # Intermediate files (and output)
 BAM="$HOME/Datasets/1000genomes/NA12878/little-subsampled.bam"
-MKDUPS="mkdups.tmp"
+MKDUPS="mkdups.bam"
 
 #ADAM/Avocado setup
 adam_submit="../bdgenomics/adam/bin/adam-submit"
