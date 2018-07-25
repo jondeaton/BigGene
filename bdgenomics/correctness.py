@@ -11,6 +11,46 @@ import argparse
 import logging
 
 
+def get_duplicates(bam_file):
+    samfile = pysam.AlignmentFile(bam_file, 'r')
+
+    duplicates = set()
+    total_reads = 0
+    for read in samfile.fetch(until_eof=True):
+        assert (isinstance(read, pysam.AlignedSegment))
+        total_reads += 1
+        if read.is_duplicate:
+            duplicates.add((read.rname, read.is_read1))
+
+    logger.debug("total reads: %d" % total_reads)
+    return duplicates
+
+
+def main():
+    args = parse_args()
+    init_logger(args)
+
+    logger.info("Getting duplicates for: %s" % os.path.basename(args.correct))
+    correct_duplicates = get_duplicates(args.correct)
+    logger.info("Correct duplicates: %d" % len(correct_duplicates))
+
+    logger.info("Getting duplicates for: %s" % os.path.basename(args.check))
+    check_duplicates = get_duplicates(args.check)
+    logger.info("Check duplicates: %d" % len(check_duplicates))
+
+    mutual = check_duplicates.intersection(correct_duplicates)
+    false_positives = check_duplicates - correct_duplicates
+    missed_dups = correct_duplicates - check_duplicates
+
+    logger.info("%d mutual (correct)" % len(mutual))
+    logger.info("%d false positives" % len(false_positives))
+    logger.info("%d missed" % len(missed_dups))
+
+    logger.info("Getting duplicates for: %s" % args.input)
+    original_duplicates = get_duplicates(args.input)
+    logger.info("Original duplicates: %d" % len(original_duplicates))
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Duplicate Marking Corretness Checker",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -47,19 +87,6 @@ def init_logger(args):
     else: level = logging.WARNING
 
     logger.setLevel(level)
-
-
-def main():
-    args = parse_args()
-    init_logger(args)
-    
-    samfile = pysam.AlignmentFile(args.input, 'r')
-
-    duplicates = set()
-    for read in samfile.fetch():
-        assert (isinstance(read, pysam.AlignedRead))
-        if read.is_duplicate:
-            duplicates.add(read.rname)
 
 
 if __name__ == "__main__":
