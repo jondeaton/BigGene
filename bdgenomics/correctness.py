@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 '''
 This script is for verifying correctness of a run of duplicate marking
-
 '''
+
 
 import os
 import sys
@@ -12,6 +12,11 @@ import logging
 
 
 def get_duplicates(bam_file):
+    """
+    Finds all of the duplicate reads within a given BAM file.
+    :param bam_file: The BAM file to get the duplicate reads from
+    :return: A set containing all duplicate reads from within the BAM file
+    """
     samfile = pysam.AlignmentFile(bam_file, 'r')
 
     duplicates = set()
@@ -25,17 +30,47 @@ def get_duplicates(bam_file):
     return duplicates
 
 
+def duplicate_stats(duplicates):
+
+    logger.info("Total duplicates: %d" % len(duplicates))
+
+    unmapped = 0
+    read1 = 0
+    read2 = 0
+    secondary = 0
+
+    for read in duplicates:
+        assert (isinstance(read, pysam.AlignedSegment))
+        if read.is_unmapped:
+            unmapped += 1
+
+        if read.is_read1:
+            read1 += 1
+
+        if read.is_read2:
+            read2 += 1
+
+        if read.is_secondary:
+            secondary += 1
+
+    logger.info("unmapped: %d" % unmapped)
+    logger.info("read1: %d" % read1)
+    logger.info("read2: %d" % read2)
+    logger.info("secondary: %d" % secondary)
+
+
 def main():
     args = parse_args()
     init_logger(args)
 
     logger.info("Getting duplicates for: %s" % os.path.basename(args.correct))
     correct_duplicates = get_duplicates(args.correct)
-    logger.info("Correct duplicates: %d" % len(correct_duplicates))
+    duplicate_stats(correct_duplicates)
 
     logger.info("Getting duplicates for: %s" % os.path.basename(args.check))
     check_duplicates = get_duplicates(args.check)
-    logger.info("Check duplicates: %d" % len(check_duplicates))
+    duplicate_stats(check_duplicates)
+
 
     mutual = check_duplicates.intersection(correct_duplicates)
     false_positives = check_duplicates - correct_duplicates
