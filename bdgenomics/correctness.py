@@ -71,14 +71,19 @@ def main():
     check_duplicates = get_duplicates(args.check)
     duplicate_stats(check_duplicates)
 
-
     mutual = check_duplicates.intersection(correct_duplicates)
     false_positives = check_duplicates - correct_duplicates
     missed_dups = correct_duplicates - check_duplicates
 
-    logger.info("%d mutual (correct)" % len(mutual))
-    logger.info("%d false positives" % len(false_positives))
-    logger.info("%d missed" % len(missed_dups))
+    logger.info("MUTUAL:")
+    duplicate_stats(mutual)
+
+    logger.info("FALSE POSITIVES:")
+    duplicate_stats(false_positives)
+
+    logger.info("MISSED:")
+    duplicate_stats(missed_dups)
+
 
     # logger.info("Getting duplicates for: %s" % args.input)
     # original_duplicates = get_duplicates(args.input)
