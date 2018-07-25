@@ -20,8 +20,7 @@ def get_duplicates(bam_file):
         assert (isinstance(read, pysam.AlignedSegment))
         total_reads += 1
         if read.is_duplicate:
-            duplicates.add((read.rname, read.is_read1))
-
+            duplicates.add(read)
     logger.debug("total reads: %d" % total_reads)
     return duplicates
 
@@ -46,9 +45,9 @@ def main():
     logger.info("%d false positives" % len(false_positives))
     logger.info("%d missed" % len(missed_dups))
 
-    logger.info("Getting duplicates for: %s" % args.input)
-    original_duplicates = get_duplicates(args.input)
-    logger.info("Original duplicates: %d" % len(original_duplicates))
+    # logger.info("Getting duplicates for: %s" % args.input)
+    # original_duplicates = get_duplicates(args.input)
+    # logger.info("Original duplicates: %d" % len(original_duplicates))
 
 
 def parse_args():
