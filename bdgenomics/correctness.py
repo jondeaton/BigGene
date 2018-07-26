@@ -34,15 +34,20 @@ def duplicate_stats(duplicates):
 
     logger.info("Total duplicates: %d" % len(duplicates))
 
+    primary = 0
+    secondary = 0
     unmapped = 0
     read1 = 0
     read2 = 0
-    secondary = 0
-    paired = 0
-    none_ref_pos = 0
 
     for read in duplicates:
         assert (isinstance(read, pysam.AlignedSegment))
+
+        if read.is_secondary:
+            secondary += 1
+        else:
+            primary += 1
+
         if read.is_unmapped:
             unmapped += 1
 
@@ -52,21 +57,11 @@ def duplicate_stats(duplicates):
         if read.is_read2:
             read2 += 1
 
-        if read.is_secondary:
-            secondary += 1
-
-        if read.is_paired:
-            paired += 1
-
-        if read.get_reference_positions() is None:
-            none_ref_pos += 1
-
+    logger.info("primary: %d" % primary)
+    logger.info("secondary: %d" % secondary)
     logger.info("unmapped: %d" % unmapped)
     logger.info("read1: %d" % read1)
     logger.info("read2: %d" % read2)
-    logger.info("secondary: %d" % secondary)
-    logger.info("No ref-pos: %d" % none_ref_pos)
-
 
 def main():
     args = parse_args()
