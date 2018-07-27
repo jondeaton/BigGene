@@ -31,7 +31,6 @@ def get_duplicates(bam_file):
 
 
 def duplicate_stats(duplicates):
-
     logger.info("Total duplicates: %d" % len(duplicates))
 
     primary = 0
@@ -63,6 +62,7 @@ def duplicate_stats(duplicates):
     logger.info("read1: %d" % read1)
     logger.info("read2: %d" % read2)
 
+
 def main():
     args = parse_args()
     init_logger(args)
@@ -75,18 +75,14 @@ def main():
     check_duplicates = get_duplicates(args.check)
     duplicate_stats(check_duplicates)
 
-    mutual = check_duplicates.intersection(correct_duplicates)
-    false_positives = check_duplicates - correct_duplicates
-    missed_dups = correct_duplicates - check_duplicates
-
-    logger.info("MUTUAL:")
-    duplicate_stats(mutual)
+    logger.info("INTERSECTION:")
+    duplicate_stats(check_duplicates.intersection(correct_duplicates))
 
     logger.info("FALSE POSITIVES:")
-    duplicate_stats(false_positives)
+    duplicate_stats(check_duplicates - correct_duplicates)
 
     logger.info("MISSED:")
-    duplicate_stats(missed_dups)
+    duplicate_stats(correct_duplicates - check_duplicates)
 
     # logger.info("Getting duplicates for: %s" % args.input)
     # original_duplicates = get_duplicates(args.input)
