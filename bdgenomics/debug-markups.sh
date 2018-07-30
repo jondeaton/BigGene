@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Intermediate files (and output)
-BAM="$HOME/Datasets/1000genomes/NA12878/little-subsampled.bam"
-MKDUPS="mkdups.bam"
+BAM="$HOME/Datasets/1000Genomes/NA12878/downsampled/little-subsampled.bam"
+MKDUPS="mkdups_DEBUG.bam"
 
 #ADAM/Avocado setup
 adam_submit="../bdgenomics/adam/bin/adam-submit"
@@ -28,4 +28,4 @@ $adam_submit \
     -- transformAlignments \
     "$BAM" "$MKDUPS" \
     -mark_duplicate_reads \
-    -sort_reads 2>&1
+    -sort_reads

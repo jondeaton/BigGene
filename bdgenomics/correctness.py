@@ -17,6 +17,9 @@ def get_duplicates(bam_file):
     :param bam_file: The BAM file to get the duplicate reads from
     :return: A set containing all duplicate reads from within the BAM file
     """
+    if not os.path.isfile(bam_file):
+        logger.error("No such file: %s" % bam_file)
+        return
     samfile = pysam.AlignmentFile(bam_file, 'r')
 
     duplicates = set()
@@ -67,13 +70,22 @@ def main():
     args = parse_args()
     init_logger(args)
 
+    logger.info("Getting duplicates for: %s" % args.input)
+    original_duplicates = get_duplicates(args.input)
+    if original_duplicates is not None:
+        duplicate_stats(original_duplicates)
+
     logger.info("Getting duplicates for: %s" % os.path.basename(args.correct))
     correct_duplicates = get_duplicates(args.correct)
-    duplicate_stats(correct_duplicates)
+    if correct_duplicates is not None:
+        duplicate_stats(correct_duplicates)
 
     logger.info("Getting duplicates for: %s" % os.path.basename(args.check))
     check_duplicates = get_duplicates(args.check)
-    duplicate_stats(check_duplicates)
+    if check_duplicates is not None:
+        duplicate_stats(check_duplicates)
+    else:
+        return
 
     logger.info("INTERSECTION:")
     duplicate_stats(check_duplicates.intersection(correct_duplicates))
@@ -83,20 +95,15 @@ def main():
 
     logger.info("MISSED:")
     duplicate_stats(correct_duplicates - check_duplicates)
-
-    # logger.info("Getting duplicates for: %s" % args.input)
-    # original_duplicates = get_duplicates(args.input)
-    # logger.info("Original duplicates: %d" % len(original_duplicates))
-
-
+    
 def parse_args():
     parser = argparse.ArgumentParser(description="Duplicate Marking Corretness Checker",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     io_options_group = parser.add_argument_group("Input")
-    io_options_group.add_argument("-in", "--input", help="Pre-marking, input bam file")
-    io_options_group.add_argument("-correct", "--correct", help="Correctly duplicate marked file")
-    io_options_group.add_argument("-check", "--check", help="Duplicate marked file to check")
+    io_options_group.add_argument("-in", "--input", required=True, help="Pre-marking, input bam file")
+    io_options_group.add_argument("-correct", "--correct", required=True, help="Correctly duplicate marked file")
+    io_options_group.add_argument("-check", "--check", required=True, help="Duplicate marked file to check")
 
     console_options_group = parser.add_argument_group("Console Options")
     console_options_group.add_argument('-v', '--verbose', action='store_true', help='verbose output')
