@@ -11,7 +11,7 @@ import org.bdgenomics.formats.avro.{AlignmentRecord, Fragment}
 import org.bdgenomics.adam.sql
 
 
-val fn = "/Users/jonpdeaton/Datasets/1000genomes/NA12878/little-subsampled.bam"
+val fn = "/home/jdeaton/Datasets/1000Genomes/NA12878/downsampled/little-subsampled.bam"
 val rdd = sc.loadBam(fn)
 
 val sqlContext = SQLContext.getOrCreate(rdd.rdd.context)
