@@ -2,8 +2,6 @@
 '''
 This script is for verifying correctness of a run of duplicate marking
 '''
-
-
 import os
 import sys
 import pysam
@@ -33,7 +31,7 @@ def get_duplicates(bam_file):
     return duplicates
 
 
-def duplicate_stats(duplicates):
+def duplicate_stats(duplicates, print_reads=False):
     logger.info("Total duplicates: %d" % len(duplicates))
 
     primary = 0
@@ -43,7 +41,7 @@ def duplicate_stats(duplicates):
     read2 = 0
 
     for read in duplicates:
-        assert (isinstance(read, pysam.AlignedSegment))
+        assert(isinstance(read, pysam.AlignedSegment))
 
         if read.is_secondary:
             secondary += 1
@@ -64,7 +62,9 @@ def duplicate_stats(duplicates):
     logger.info("unmapped: %d" % unmapped)
     logger.info("read1: %d" % read1)
     logger.info("read2: %d" % read2)
-
+    if print_reads:
+        for read in duplicates:
+            print(read)
 
 def main():
     args = parse_args()
@@ -91,10 +91,10 @@ def main():
     duplicate_stats(check_duplicates.intersection(correct_duplicates))
 
     logger.info("FALSE POSITIVES:")
-    duplicate_stats(check_duplicates - correct_duplicates)
+    duplicate_stats(check_duplicates - correct_duplicates, print_reads=args.print_false_positives)
 
     logger.info("MISSED:")
-    duplicate_stats(correct_duplicates - check_duplicates)
+    duplicate_stats(correct_duplicates - check_duplicates, print_reads=args.print_missed)
     
 def parse_args():
     parser = argparse.ArgumentParser(description="Duplicate Marking Corretness Checker",
@@ -106,6 +106,8 @@ def parse_args():
     io_options_group.add_argument("-check", "--check", required=True, help="Duplicate marked file to check")
 
     console_options_group = parser.add_argument_group("Console Options")
+    console_options_group.add_argument('-f', '--print-false-positives', action='store_true', help="Print false positives")
+    console_options_group.add_argument('-p', "--print-missed", action='store_true', help="Print missed reads")
     console_options_group.add_argument('-v', '--verbose', action='store_true', help='verbose output')
     console_options_group.add_argument('--debug', action='store_true', help='Debug Console')
 

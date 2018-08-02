@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 ORIGINAL="$HOME/Datasets/1000genomes/NA12878/little-subsampled.bam"
-#CORRECT="correct_mkdups.bam"
-CORRECT="simpler_mkdups.bam"
+CORRECT="correct_mkdups.bam"
+#CORRECT="simpler_mkdups.bam"
 CHECK="mkdups.bam"
 
 python correctness.py --debug --input "$ORIGINAL" --correct "$CORRECT" --check "$CHECK"
