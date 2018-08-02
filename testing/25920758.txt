@@ -39,7 +39,7 @@ readName: HWI-D00684:221:HNWKCADXX:2:1213:7143:86120
 	- readInFragment: 0
 
 - Even when correcting the score, it has the same read1 and read2 ref pos as
-HWI-D00684:221:HNWKCADXX:2:1213:7143:86120
+HWI-D00684:216:HTCFTADXX:2:2214:18429:5472
 - which has a score of 3043 (in mine)
 
 some more false positives
