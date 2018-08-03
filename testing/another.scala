@@ -14,6 +14,7 @@ import scala.math
 import htsjdk.samtools.{ Cigar, CigarElement, CigarOperator, TextCigarCodec }
 import scala.collection.JavaConversions._
 import org.apache.spark.sql.functions
+import org.bdgenomics.formats.avro.{ AlignmentRecord, Strand }
 
 
 val fn = "/home/jdeaton/Datasets/1000Genomes/NA12878/downsampled/little-subsampled.bam"
@@ -70,7 +71,60 @@ val df = alignmentRecords.dataset
     fpUDF('readMapped, 'readNegativeStrand, 'cigar, 'start, 'end))
 
 
-df
-.filter('readName === "HWI-D00684:221:HNWKCADXX:1:1109:19666:39303")
-.groupBy("recordGroupName", "readName")
-.agg(first(when('primaryAlignment and 'readInFragment === 0, 'fivePrimePosition)) as 'read1RefPos)
+val positionedDf = df
+    .groupBy("recordGroupName", "readName")
+    .agg(
+
+      // Read 1 Reference Position
+      first(when('primaryAlignment and 'readInFragment === 0,
+        when('readMapped, 'contigName).otherwise('sequence)),
+        ignoreNulls = true)
+        as 'read1contigName,
+
+      first(when('primaryAlignment and 'readInFragment === 0,
+        when('readMapped, 'fivePrimePosition).otherwise(0L)),
+        ignoreNulls = true)
+        as 'read1fivePrimePosition,
+
+      first(when('primaryAlignment and 'readInFragment === 0,
+        when('readMapped,
+          when('readNegativeStrand, Strand.REVERSE.toString).otherwise(Strand.FORWARD.toString))
+          .otherwise(Strand.INDEPENDENT.toString)),
+        ignoreNulls = true)
+        as 'read1strand,
+
+      // Read 2 Reference Position
+      first(when('primaryAlignment and 'readInFragment === 1,
+        when('readMapped, 'contigName).otherwise('sequence)),
+        ignoreNulls = true)
+        as 'read2contigName,
+
+      first(when('primaryAlignment and 'readInFragment === 1,
+        when('readMapped, 'fivePrimePosition).otherwise(0L)),
+        ignoreNulls = true)
+        as 'read2fivePrimePosition,
+
+      first(when('primaryAlignment and 'readInFragment === 1,
+        when('readMapped,
+          when('readNegativeStrand, Strand.REVERSE.toString).otherwise(Strand.FORWARD.toString))
+          .otherwise(Strand.INDEPENDENT.toString)),
+        ignoreNulls = true)
+        as 'read2strand,
+
+      sum(when('readMapped and 'primaryAlignment, scoreUDF('qual))) as 'score)
+    .join(libraryDf(alignmentRecords.recordGroups), "recordGroupName")
+
+// positionedDf.count = 514,303
+val positionWindow = Window
+  .partitionBy('library,
+    'read1contigName, 'read1fivePrimePosition, 'read1strand,
+    'read2contigName, 'read2fivePrimePosition, 'read2strand)
+  .orderBy('score.desc)
+
+// Unmapped reads
+val filteredDf = positionedDf.filter('read1fivePrimePosition.isNotNull) // count = 232,860 (not anymore)
+
+
+positionedDf.filter('read1contigName === "chr1" and 'read1fivePrimePosition === 17311987 and 'read1strand === "FORWARD" and
+'read2contigName === "chr1" and 'read2fivePrimePosition === 17312190 and 'read2strand === "REVERSE")
+
