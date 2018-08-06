@@ -28,7 +28,6 @@ primaryMapped read 2
 readName: HWI-D00684:216:HTCFTADXX:1:1107:11746:90551
 
 
-
 One of the 106 false positives that I have
 readName: HWI-D00684:221:HNWKCADXX:2:1213:7143:86120
 	- This read is a top scoring read!
@@ -42,6 +41,19 @@ readName: HWI-D00684:221:HNWKCADXX:2:1213:7143:86120
 HWI-D00684:216:HTCFTADXX:2:2214:18429:5472
 - which has a score of 3043 (in mine)
 
+The issue is that you can't just group by reference position, but you also have to group by referenceName and strand
+
 some more false positives
 HWI-D00684:221:HNWKCADXX:1:1205:12143:89802
 HWI-D00684:216:HTCFTADXX:1:2104:7648:67154
+
+
+
+
+Reads which are still wrong on the big dataset (there are 21 unmapped false positives)
+
+
+HWI-D00684:217:HT7M7ADXX:1:1201:15447:7439
+HWI-D00684:221:HNWKCADXX:2:2116:13530:83270
+HWI-D00684:217:HT7M7ADXX:2:1212:15188:80677
+HWI-D00684:217:HT7M7ADXX:1:2112:2614:61243
