@@ -27,25 +27,6 @@ val df = spark.createDataFrame(Seq(
       (7876, "ADAMS", "CLERK", 7788, "23-May-87", 1100, 0, 20)
     )).toDF("empno", "ename", "job", "mgr", "hiredate", "sal", "comm", "deptno")
 
-val df = spark.createDatFrame(Seq(
-	(1, 0, true, false, false, 120),
-	(1, 1, true, false, false, 300),
-
-	(2, 0, true, false, false, 120),
-	(2, 1, true, false, false, 300),
-	(2, 0, false, false, false, 120),
-	(2, 1, false, false, false, 300),
-	
-	(3, 0, true, false, false, 120),
-	(3, 1, true, false, false, 300),
-	
-	(4, 0, true, false, false, 120),
-	(4, 1, true, false, false, 300),
-	
-	(5, 0, true, false, false, 120),
-	(5, 1, true, false, false, 300),
-)).toDF("fid", "readno", "primary", "secondary", "unmapped", "pos")
-
 case class Employee(empno: Int, ename: String,
       job: String, mgr: Int, hiredate: String,
       sal: Int, comm: Int, deptno: Int)
