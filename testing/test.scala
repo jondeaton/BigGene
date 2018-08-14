@@ -9,12 +9,11 @@ spark.history.fs.logDirectory /path/to/spark/logs
 
 // Some sable scala code
 import org.apache.spark.sql.SparkSession
-val sparkSession = SparkSession.builder.master("local").appName("test").getOrCreate()
-import sparkSession.implicits._
+import spark.implicits._
 import org.apache.spark.sql.functions
 
 // sample
-val df = sparkSession.createDataFrame(Seq(
+val df = spark.createDataFrame(Seq(
       (7369, "SMITH", "CLERK", 7902, "17-Dec-80", 800, 20, 10),
       (7499, "ALLEN", "SALESMAN", 7698, "20-Feb-81", 1600, 300, 30),
       (7521, "WARD", "SALESMAN", 7698, "22-Feb-81", 1250, 500, 30),
@@ -28,9 +27,7 @@ val df = sparkSession.createDataFrame(Seq(
       (7876, "ADAMS", "CLERK", 7788, "23-May-87", 1100, 0, 20)
     )).toDF("empno", "ename", "job", "mgr", "hiredate", "sal", "comm", "deptno")
 
-
-
-val df = sparkSession.createDatFrame(Seq(
+val df = spark.createDatFrame(Seq(
 	(1, 0, true, false, false, 120),
 	(1, 1, true, false, false, 300),
 
@@ -61,6 +58,12 @@ val jobWin = Window.partitionBy("job")
 df.withColumn("mvp", max("sal").over(Window.partitionBy("job")))
 
 df.withColumn("mvp", max(df("sal")).over(Window.partitionBy("job")))
+
+
+case class Person
+
+
+
 
 // Read this: http://web.stanford.edu/class/cs145/lectures/lecture-9/review.pdf
 // https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence
