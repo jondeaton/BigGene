@@ -1,0 +1,29 @@
+
+In order to view the spark hsitory
+
+run
+/opt/spark/sbin/start-history-server.sh
+mdkir /tmp/spark-events
+
+You can also look into
+/opt/spark/logs/spark-jdeaton-org.apache.spark.deplyo.history.HistorySrver....
+
+
+Add command line flag
+--conf spark.eventLog.enabled=true
+
+
+In order to chagne Saprk logging
+go to: /opt/spark/conf/
+
+mv log4j.properties.template log4j.properties
+chagne "log4j.rootCategory=WARN"
+
+
+
+# In order to run x-ray use the following flags (must be on vanilla spark)
+--conf spark.bigstream.xray.overwrite=true \
+--conf spark.bigstream.xray.filename=xray_log \
+--conf spark.bigstream.xray.dir=. \
+--conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener \
+--conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar \
