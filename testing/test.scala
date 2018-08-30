@@ -16,7 +16,8 @@ val employees = spark.createDataFrame(Seq(
       (7844, "Turner",      "Salesman",     "trans",    7698, "8-Sep-81",   1500, 0, 30),
       (7876, "Adams",       "Clerk",        "male",     7788, "23-May-87",  1100, 0, 20),
       (7876, "Ellen",       "Coder",        "female",     7708, "23-Sep-87",  1700, 1, 10),
-      (7876, "Gokul",       "Hardware",     "male",     7908, "21-Sep-87",  2700, 1, 20)
+      (7876, "Gokul",       "Hardware",     "male",     7908, "21-Sep-87",  2700, 1, 20),
+      (234,  "Jon",               null,     "male",       23, "18-Aug-18",   234, 0, 10)
     )).toDF("empno", "ename", "job", "gender", "mgr", "hiredate", "sal", "comm", "deptno")
 
 

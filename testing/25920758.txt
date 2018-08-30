@@ -54,6 +54,15 @@ Reads which are still wrong on the big dataset (there are 21 unmapped false posi
 
 
 HWI-D00684:217:HT7M7ADXX:1:1201:15447:7439
+- This fragemnt contains a mapped primary read and an unmapped read and is NOT the highest scoring fragment at it's left and right position group. 
+- the other fragment at this position scored: 3445
+- this fragment scored: 3410
+
+The one that we marekd as a duplicate but which should not be marked as a duplicte is the unmapped one from the low scoring fragment
+I notice now that when you mark buckets/fragments as duplicate you don't mark the unmapped reads, even in low scoring reads
+
+
+
 HWI-D00684:221:HNWKCADXX:2:2116:13530:83270
 HWI-D00684:217:HT7M7ADXX:2:1212:15188:80677
 HWI-D00684:217:HT7M7ADXX:1:2112:2614:61243

@@ -96,7 +96,7 @@ def main():
 
     logger.info("FALSE POSITIVES:")
     duplicate_stats(check_duplicates - correct_duplicates,
-            print_reads=args.print_false_positives, print_unmapped=True)
+            print_reads=args.print_false_positives, print_unmapped=False)
 
     logger.info("MISSED:")
     duplicate_stats(correct_duplicates - check_duplicates, print_reads=args.print_missed)
