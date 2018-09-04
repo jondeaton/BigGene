@@ -2,7 +2,7 @@
 
 # Intermediate files (and output)
 fn="little-subsampled.bam"
-#fn="20000000-NA12878_phased_possorted_bam.bam"
+#fn="20000000-NA12878_phased_possorted_bam.bam" # took 12m39.653s on Spark SQL version, theirs took 27m19.691s
 BAM="$HOME/Datasets/1000Genomes/NA12878/downsampled/$fn"
 MKDUPS="mkdups.bam"
 

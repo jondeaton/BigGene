@@ -18,6 +18,7 @@ import org.bdgenomics.formats.avro.{ AlignmentRecord, Strand }
 
 
 val fn = "/home/jdeaton/Datasets/1000Genomes/NA12878/downsampled/little-subsampled.bam"
+val fn = "/Users/jonpdeaton/Datasets/1000Genomes/NA12878/downsampled/little-subsampled.bam"
 val alignmentRecords = sc.loadBam(fn)
 
 val sqlContext = SQLContext.getOrCreate(alignmentRecords.rdd.context)
