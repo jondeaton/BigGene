@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# This script is for running the PCR duplicate marking algorithm in different ways
 
 # =========================
 # Options. Because parsing command line arguments in Bash is nosogood
@@ -17,18 +18,18 @@ output_filename="mkdups.bam"
 log_file="mkdups.log"
 
 debug=false         # Pauses execution so that you can attach IntelliJ Debugger
-bigstream=true     # Run with Bigstream Spark
+bigstream=false     # Run with Bigstream Spark
 xray=false          # Run with X-ray (cannot use Bistream Spark)
-fragments=true     # Input are fragments
+fragments=false     # Input are fragments
 
 xray_file="mkdups.xray-log"
 
 # =========================
 
 #ADAM/Avocado locations
-adam_submit="../bdgenomics/axstreamADAM/bin/adam-submit"
-#adam_submit="../bdgenomics/adam/bin/adam-submit"
-avocado_submit="../bdgenomics/avocado/bin/avocado-submit"
+#adam_submit="axstreamADAM/bin/adam-submit"
+adam_submit="adam/bin/adam-submit"
+avocado_submit="avocado/bin/avocado-submit"
 
 if "$fragments"; then
     adam_command="transformFragments"
