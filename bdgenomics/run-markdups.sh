@@ -2,7 +2,7 @@
 
 # Intermediate files (and output)
 fn="little-subsampled.bam"
-#fn="10000000-NA12878_phased_possorted_bam.bam"
+#fn="20000000-NA12878_phased_possorted_bam.bam"
 BAM="$HOME/Datasets/1000Genomes/NA12878/downsampled/$fn"
 MKDUPS="mkdups.bam"
 
@@ -19,6 +19,7 @@ export HADOOP_HOME="/opt/hadoop"
 export HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_HOME/lib/native"
 
 rm -rf "$MKDUPS"
+rm -r mkdups.bam_head mkdups.bam_tail mkdups.log
 
 time $adam_submit \
     --name "Mark Duplicates" \
@@ -30,5 +31,6 @@ time $adam_submit \
     -- transformAlignments \
     "$BAM" "$MKDUPS" \
     -mark_duplicate_reads \
-    -single 2>&1 | tee mkdups.log
+    -single 2>&1 \
+    -sort_reads | tee mkdups.log
 
