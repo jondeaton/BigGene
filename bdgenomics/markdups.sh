@@ -39,9 +39,9 @@ fi
 
 if "$bigstream"; then
   echo -e  "._:=** Using Bigstream acceleration **=:_."
-  bigstream="$HOME/opt/spark-bigstream"
-  spark_bigstream="$bigstream/spark-2.1.1-BIGSTREAM-bin-bigstream-spark-yarn-h2.7.2"
-  export LD_LIBRARY_PATH="$bigstream/libs"
+  bigstream_home="$HOME/opt/spark-bigstream"
+  spark_bigstream="$bigstream_home/spark-2.1.1-BIGSTREAM-bin-bigstream-spark-yarn-h2.7.2"
+  export LD_LIBRARY_PATH="$bigstream_home/libs"
   export SPARK_HOME="$spark_bigstream"
 fi
 

@@ -51,7 +51,7 @@ JAVA_OPTS="$JAVA_OPTS -Djava.library.path=$SPARK_LIBRARY_PATH"
 JAVA_OPTS="$JAVA_OPTS -Xms$SPARK_MEM -Xmx$SPARK_MEM"
 
 # Bigstream acceleration
-accelerate=$3
+accelerate=false
 if $accelerate; then
   echo -e  "._:=** Using Bigstream acceleration **=:_."
   bigstream="$HOME/opt/spark-bigstream"

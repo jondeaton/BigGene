@@ -1,14 +1,15 @@
 #!/bin/bash
+# This script runs duplicate marking using ADAM
 
-# Intermediate files (and output)
-fn="little-subsampled.bam"
-#fn="20000000-NA12878_phased_possorted_bam.bam" # took 12m39.653s on Spark SQL version, theirs took 27m19.691s
-BAM="$HOME/Datasets/1000Genomes/NA12878/downsampled/$fn"
+# Input file
+BAM="/usr/remote/share/workspace/jon/little-subsampled.bam"
+
+# output file
 MKDUPS="mkdups.bam"
 
-#ADAM/Avocado setup
-adam_submit="../bdgenomics/adam/bin/adam-submit"
-avocado_submit="../bdgenomics/avocado/bin/avocado-submit"
+#ADAM submission script location
+adam_submit="adam/bin/adam-submit"
+#adam_submit="axstreamADAM/bin/adam-submit" # Use this one if you cloned the axstreamADAM repository instead
 
 # Set JAVA_OPTS to be able to load native libraries and to set heap size
 JAVA_OPTS="$OUR_JAVA_OPTS"
@@ -18,6 +19,7 @@ JAVA_OPTS="$JAVA_OPTS -Xms$SPARK_MEM -Xmx$SPARK_MEM"
 export HADOOP_HOME="/opt/hadoop"
 export HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_HOME/lib/native"
 
+# remove output and temporary files
 rm -rf "$MKDUPS"
 rm -r mkdups.bam_head mkdups.bam_tail mkdups.log
 

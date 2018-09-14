@@ -31,7 +31,7 @@ def get_duplicates(bam_file):
     return duplicates
 
 
-def duplicate_stats(duplicates, print_reads=False, print_unmapped=False):
+def duplicate_stats(duplicates, print_reads=False, print_unmapped=False, print_secondary=False):
     logger.info("Total duplicates: %d" % len(duplicates))
 
     primary = 0
@@ -66,6 +66,10 @@ def duplicate_stats(duplicates, print_reads=False, print_unmapped=False):
         for read in duplicates:
             print(read)
 
+    if print_secondary:
+    	for read in duplicates:
+    		print(read)
+
     if print_unmapped:
         for read in filter(lambda r: r.is_unmapped, duplicates):
             print(read)
@@ -96,7 +100,7 @@ def main():
 
     logger.info("FALSE POSITIVES:")
     duplicate_stats(check_duplicates - correct_duplicates,
-            print_reads=args.print_false_positives, print_unmapped=False)
+            print_reads=args.print_false_positives, print_unmapped=False, print_secondary=False)
 
     logger.info("MISSED:")
     duplicate_stats(correct_duplicates - check_duplicates, print_reads=args.print_missed)
