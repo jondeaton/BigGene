@@ -15,7 +15,6 @@ SPARK_MEM=${SPARK_MEM:-6g}
 export SPARK_MEM
 
 # Set JAVA_OPTS to be able to load native libraries and to set heap size
-JAVA_OPTS="$OUR_JAVA_OPTS"
 JAVA_OPTS="$JAVA_OPTS -Djava.library.path=$SPARK_LIBRARY_PATH"
 JAVA_OPTS="$JAVA_OPTS -Xms$SPARK_MEM -Xmx$SPARK_MEM"
 

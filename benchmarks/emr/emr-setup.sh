@@ -5,7 +5,7 @@ sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
 sudo yum install -y apache-maven
 
 # isntall git and clone adam
-sudo yum install -y git tmux htop
+sudo yum install -y git tmux htop s3-dist-cp
 git clone https://github.com/jondeaton/adam.git
 cd adam
 
@@ -16,5 +16,9 @@ echo 1 | sudo /usr/sbin/alternatives --config javac
 git checkout feature/SparkSQL
 mvn -DskipTests=true clean package
 
-cd ..
-./run.sh
+echo "set-option -g prefix C-x" >> ~/.tmux.conf
+
+sudo yum install -y hadoop-yarn-nodemanager
+initctl list | grep yarn
+sudo stop hadoop-yarn-nodemanager
+sudo start hadoop-yarn-nodemanager
