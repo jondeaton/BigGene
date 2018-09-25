@@ -46,32 +46,8 @@ SPARK_MEM=${SPARK_MEM:-6g}
 export SPARK_MEM
 
 # Set JAVA_OPTS to be able to load native libraries and to set heap size
-JAVA_OPTS="$OUR_JAVA_OPTS"
 JAVA_OPTS="$JAVA_OPTS -Djava.library.path=$SPARK_LIBRARY_PATH"
 JAVA_OPTS="$JAVA_OPTS -Xms$SPARK_MEM -Xmx$SPARK_MEM"
-
-# Bigstream acceleration
-accelerate=false
-if $accelerate; then
-  echo -e  "._:=** Using Bigstream acceleration **=:_."
-  bigstream="$HOME/opt/spark-bigstream"
-  spark_bigstream="$bigstream/spark-2.1.1-BIGSTREAM-bin-bigstream-spark-yarn-h2.7.2"
-  export LD_LIBRARY_PATH="$bigstream/libs"
-  export SPARK_HOME="$spark_bigstream"
-fi
-
-xray=false
-if $xray; then
-    echo -e  "Using X-Ray"
-    xray_dir="xray"
-    XRAY_FLAGS="--conf spark.bigstream.xray.overwrite=true"
-    XRAY_FLAGS="$XRAY_FLAGS --conf spark.bigstream.xray.dir=$xray_dir"
-    XRAY_FLAGS="$XRAY_FLAGS --conf spark.extraListeners=org.apache.spark.bigstream.xray.AXBDXrayListener"
-    XRAY_FLAGS="$XRAY_FLAGS --conf spark.driver.extraClassPath=spark-bigstream-xray-1.0.3-BIGSTREAM.jar"
-
-    xray_extension="xray-log"
-    bsql_xray=bsqr."$xray_extension"
-fi
 
 echo -e  "${Green}==================== MARKING DUPLICATES, SORTING, TRANSFORMING  =========================${NC}"
 rm -rf "$MKDUPS"

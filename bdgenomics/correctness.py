@@ -78,10 +78,11 @@ def main():
     args = parse_args()
     init_logger(args)
 
-    logger.info("Getting duplicates for: %s" % args.input)
-    original_duplicates = get_duplicates(args.input)
-    if original_duplicates is not None:
-        duplicate_stats(original_duplicates)
+    if args.input is not None:
+        logger.info("Getting duplicates for: %s" % args.input)
+        original_duplicates = get_duplicates(args.input)
+        if original_duplicates is not None:
+            duplicate_stats(original_duplicates)
 
     logger.info("Getting duplicates for: %s" % os.path.basename(args.correct))
     correct_duplicates = get_duplicates(args.correct)
@@ -110,7 +111,7 @@ def parse_args():
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     io_options_group = parser.add_argument_group("Input")
-    io_options_group.add_argument("-in", "--input", required=True, help="Pre-marking, input bam file")
+    io_options_group.add_argument("-in", "--input", required=False, help="Pre-marking, input bam file")
     io_options_group.add_argument("-correct", "--correct", required=True, help="Correctly duplicate marked file")
     io_options_group.add_argument("-check", "--check", required=True, help="Duplicate marked file to check")
 
