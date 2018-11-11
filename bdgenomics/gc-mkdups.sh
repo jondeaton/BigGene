@@ -17,6 +17,7 @@ gcloud dataproc jobs submit spark \
   --region="asia-east1" \
   --class="$ADAM_MAIN" \
   --jars="$ADAM_CLI_JAR,$GC_NIO_JAR" \
+  --properties 'spark.serializer=org.apache.spark.serializer.KryoSerializer,spark.kryo.registrator=org.bdgenomics.adam.serialization.ADAMKryoRegistrator' \
   -- \
   transformAlignments \
   $1 $2 \
