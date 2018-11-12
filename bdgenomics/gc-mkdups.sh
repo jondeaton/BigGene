@@ -13,11 +13,11 @@ ADAM_CLI_JAR=$(${ADAM_DIR}/bin/find-adam-assembly.sh)
 GC_NIO_JAR="google-cloud-nio-0.22.0-alpha-shaded.jar"
 
 gcloud dataproc jobs submit spark \
-  --cluster="bdgenomics-tester" \
-  --region="asia-east1" \
+  --cluster="bdgenomics-tester-24" \
+  --region="us-east1" \
   --class="$ADAM_MAIN" \
   --jars="$ADAM_CLI_JAR,$GC_NIO_JAR" \
-  --properties 'spark.serializer=org.apache.spark.serializer.KryoSerializer,spark.kryo.registrator=org.bdgenomics.adam.serialization.ADAMKryoRegistrator' \
+  --properties 'spark.serializer=org.apache.spark.serializer.KryoSerializer,spark.kryo.registrator=org.bdgenomics.adam.serialization.ADAMKryoRegistrator,spark.driver.memory=10g,spark.executor.memory=10g' \
   -- \
   transformAlignments \
   $1 $2 \
