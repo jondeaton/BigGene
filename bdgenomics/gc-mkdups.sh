@@ -4,8 +4,11 @@
 # downloaded from this link and in the directory in which this file exists
 # http://central.maven.org/maven2/com/google/cloud/google-cloud-nio/0.22.0-alpha/
 # You will also need to have the adam repository in this same directory
-# You will probably also need to change the name of the cluster that you 
-# submit to
+# 
+# To create the cluster which this script submits to:
+# gcloud dataproc clusters create bdgenomics-tester-24 --region="us-east1" --num-workers=24 --worker-boot-disk-size=128GB
+
+
 
 ADAM_DIR="adam"
 ADAM_MAIN="org.bdgenomics.adam.cli.ADAMMain"
